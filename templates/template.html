@@ -1,0 +1,99 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script src="https://mercurial.futurice.com/hg/futurice_fumapi/raw-file/tip/jquery.fum.js"></script>
+	<script src="http://plugins.jquery.com/files/jquery.colorBlend.js_6.txt"></script>
+	
+	<script type="text/javascript">
+	$(function(){
+		$('.name_translate').fum('user', 'cn', {siteRoot: '/'});
+		
+		$("li").click(function(event){
+			if ($(this).find(':radio').val() == "{{ rncorrect }}"){
+				$(this).colorBlend([{ fromColor: "black", toColor: "green", param: "color" }]);
+				$(this).find(':radio').attr("checked", "checked");
+				$('#nameform').delay(1500).fadeOut("slow").submit();
+				$('#face').delay(1500).fadeOut("slow");}
+			else{
+				$(this).fadeTo("slow", 0.35);}
+		});
+	
+		$('#face').load(function(event){
+			$('#face').fadeIn('slow');
+			$('#nameform').fadeIn('slow');
+		});
+	});
+	</script>
+	
+	<style type="text/css">
+		ul {
+		list-style: none;
+		}
+		
+		input[type="radio"] {
+		display: none;
+		}
+		
+		.names {
+		font-family: arial;
+		font-size: 30px;
+		line-height: 75px;
+		}
+		
+		#nameform {
+		display: none;
+		}
+		
+		.header {
+		font-family: arial;
+		font-size: 30px;
+		color: gray;
+		}
+		
+		.face {
+		display: none;
+		}
+		</style>
+	
+	<title>Futufaces</title>
+</head>
+<body>
+<center>
+
+<img alt="futurice logo" src="/static/futurice_logo_basic_smaller.png">
+</br>
+<font class="header" a="#">Face Guessing Game</font>
+</br>
+
+<table cellspacing="80px">
+<tr>
+<td>
+<p id="comment">
+</p>
+</td>
+
+<td>
+
+<form id="nameform" method="post">{% csrf_token %}
+<font class="names">
+		{{ form.name }}
+</font>
+</form>
+
+</td>
+<td>
+
+<img id="face" class="face" src="{% url fumapi:user_photo rncorrect %}">
+
+</td>
+</tr>
+</table>
+
+</br>
+</br>
+</br>
+</br>
+
+</center>
+</body>
+</html>

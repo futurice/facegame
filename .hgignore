@@ -1,0 +1,12 @@
+syntax: glob
+
+*.log*
+*.sqlite
+*.pid
+*.pyc
+.*.swp
+*~
+
+doc/html/.buildinfo
+doc/html/.doctrees
+doc/html/_sources
