@@ -1,0 +1,20 @@
+<script type="text/javascript">
+	function rnCheck(){
+		rnCorrect = "{{ rncorrect }}";
+	}	
+</script>
+
+<table cellspacing="40px" align="center">
+	<tr>
+		<td align="right">
+			<form id="nameform" method="post">{% csrf_token %}
+			<font class="names">
+			{{ form.name }}
+			</font>
+			</form>
+			</td>
+		<td align="left">
+			<img alt="current face" id="face" src="{% url fumapi:user_photo rncorrect %}">
+		</td>
+	</tr>
+</table>

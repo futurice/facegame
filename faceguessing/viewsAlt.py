@@ -10,45 +10,70 @@ class NameForm(forms.Form):
 	name = forms.ChoiceField(widget = forms.RadioSelect)
 
 def index(request):
+	print "start"
 	if request.method == 'POST':
-		#print "Sessions:"
-		#print dict(request.session)
+		print "Posted!"
+		times = request.session['times']
+		print times
+		#if times < 5:
+		times += 1
+		print times
+		request.session['times'] = times
+			#print times
+		print "Sessions:"
+		print dict(request.session)
 		random_users, correct_user = request.session['namesession']
+		prev_correct_user = correct_user
 		form = NameForm(request.POST, initial={'name': random_users})
 		form.fields['name'].choices = [(user, query('user', user)['cn']) for user in random_users]
 		if correct_user == request.POST['name']:
+			print "GOOD ANSWER !!!"
 			if form.is_valid():
+				print "VALID FORM"
 				form = NameForm()
+				#name = form.cleaned_data['name']
 				request.session.pop('namesession', None)
+
 				used_names = request.session.setdefault('used_names', [])
-				#random_users, correct_user = request.session['nextnames']
-				#n_random_users, n_correct_user = random_user(used_names)
-				#used_names.append(n_correct_user)
+				times = request.session['times']
+
 				random_users, correct_user = random_user(used_names)
 				used_names.append(correct_user)
 				form.fields['name'].choices = [(user, query('user', user)['cn']) for user in random_users]
 				request.session['namesession'] = random_users, correct_user
-				#request.session['nextnames'] = n_random_users, n_correct_user
 				request.session['used_names'] = used_names
+				print used_names
+				print correct_user
+				#{'html': generated_form, 'rnCorrect': correct_user}
 				{'rnCorrect': correct_user}
-				return render_to_response('form.html', {'form': form, 'rncorrect': correct_user}, context_instance=RequestContext(request))
+				return render_to_response('form.html', {'form': form, 'rncorrect': correct_user, 'time': times, 'prevrncorrect': prev_correct_user},
+				context_instance=RequestContext(request))
+				#return render_to_response('test.html', context_instance=RequestContext(request))
 		else:
 			print "WRONG ANSWER"
 			print "I don't even know how you got here"
+		#else:
+		#	request.session.pop('used_names', None)
+		#	request.session.pop('times')
+		#	return HttpResponseRedirect('/thegame/')
 	else:
+		print "else"
 		form = NameForm()
 		used_names = []
 		request.session['used_names'] = used_names
+		times = 0
+		request.session['times'] = times
 
 	random_users, correct_user = random_user(used_names)
 	used_names.append(correct_user)
-	#n_random_users, n_correct_user = random_user(used_names)
-	#used_names.append(n_correct_user)
+	print "blabla"
+	print times
 	form.fields['name'].choices = [(user, query('user', user)['cn']) for user in random_users]
+	print "blooaa"
 	request.session['namesession'] = random_users, correct_user
-	#request.session['nextnames'] = n_random_users, n_correct_user
 	request.session['used_names'] = used_names
-	return render_to_response('template.html', {'form': form, 'rncorrect': correct_user})
+	print used_names
+	return render_to_response('template.html', {'form': form, 'rncorrect': correct_user, 'time': times})
 
 def random_user(used_names):
 	names = ['ileh', 'tkaj', 'hnev', 'mtau', 'hdah', 'jpes', 'mcal', 'hkau', 'ekan', 'sham', 'pjal', 'mvih',
@@ -63,13 +88,17 @@ def random_user(used_names):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
+	print "names are set"
 	
 	rncorrect = not_used[random.randrange(0, len(not_used))]
 	random_names = [rncorrect]
+	print "looping"
 	for ind in range(0, 4):
 		rn = names[random.randrange(0, len(names))]
 		while rn in random_names:
 			rn = names[random.randrange(0, len(names))]
 		random_names.append(rn)
+	print "done looping"
 	random.shuffle(random_names)
+	print "done shuffling"
 	return random_names, rncorrect

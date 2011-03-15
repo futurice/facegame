@@ -1,28 +1,87 @@
 <html>
 <head>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script src="https://mercurial.futurice.com/hg/futurice_fumapi/raw-file/tip/jquery.fum.js"></script>
-	<script src="http://plugins.jquery.com/files/jquery.colorBlend.js_6.txt"></script>
+	<script src="https://github.com/malsup/form/raw/master/jquery.form.js"></script>
 	
 	<script type="text/javascript">
-	$(function(){
-		$('.name_translate').fum('user', 'cn', {siteRoot: '/'});
-		
-		$("li").click(function(event){
-			if ($(this).find(':radio').val() == "{{ rncorrect }}"){
-				$(this).colorBlend([{ fromColor: "black", toColor: "green", param: "color" }]);
-				$(this).find(':radio').attr("checked", "checked");
-				$('#nameform').delay(1500).fadeOut("slow").submit();
-				$('#face').delay(1500).fadeOut("slow");}
-			else{
-				$(this).fadeTo("slow", 0.35);}
+	var rnCorrect = "{{ rncorrect }}";
+	var correctAnswers = 0;
+	var wrongAnswers = 0;
+	var currentStreak = 0;
+	var highestStreak = 0;
+
+	function response(responseText)
+	{
+		$('#face').fadeOut(400, function()
+		{
+			$('#output').css("display", "none");
+			$('#output').html(responseText);
+			rnCheck();
+			initialize();
 		});
-	
-		$('#face').load(function(event){
-			$('#face').fadeIn('slow');
-			$('#nameform').fadeIn('slow');
+	}
+
+	function initialize()
+	{
+		$('#face').load(function()
+		{
+			$('#output').fadeIn(700);
+			$('#nameform').attr("disabled", false);
 		});
+
+		$('li').mouseenter(function(event)
+		{
+			$(this).css("background-color", "#BFBAA4");
+		}).mouseleave(function(event)
+		{
+			$(this).css("background-color", "#FFFFFF");
+		});
+
+		$('li').click(function(event)
+		{
+			if ($(this).find("input[type=radio]").val() == rnCorrect)
+			{
+				$("li").unbind('click');
+				correctAnswers += 1;
+				$('#scoretxt').html("Overall: Correct " + correctAnswers + ", Wrong " + wrongAnswers);
+				currentStreak += 1;
+				if (currentStreak > highestStreak)
+				{
+					highestStreak = currentStreak;
+				}
+				$('#streaktxt').html("Streak: Current " + currentStreak + ", Highest " + highestStreak);
+				$(this).find("input[type=radio]").attr("checked", "checked");
+				$('#nameform').fadeOut(700);
+				$('#face').fadeOut(700, function()
+				{
+					$(this).attr('src', '/static/loader.gif');
+					$(this).fadeIn(400);
+				});
+				$('#nameform').submit();
+				return false;
+			}
+			else
+			{
+				$(this).unbind('click');
+				wrongAnswers += 1;
+				$('#scoretxt').html("Overall: Correct " + correctAnswers + ", Wrong " + wrongAnswers);
+				currentStreak = 0;
+				$('#streaktxt').html("Streak: Current " + currentStreak + ", Highest " + highestStreak);
+				$(this).fadeTo(700, 0.35);
+				return false;
+			}
+		});
+
+		var options = {target: '#output', success: response};
+
+		$('#nameform').ajaxForm(options);
+	}
+
+	$(function()
+	{
+		initialize();
 	});
+
 	</script>
 	
 	<style type="text/css">
@@ -39,61 +98,72 @@
 		font-size: 30px;
 		line-height: 75px;
 		}
-		
-		#nameform {
-		display: none;
-		}
-		
-		.header {
+
+		.logotxt {
 		font-family: arial;
-		font-size: 30px;
-		color: gray;
+		font-size: 35px;
+		color: #7F7B67;
 		}
-		
-		.face {
-		display: none;
+
+		.scoretxt {
+		font-family: arial;
+		font-size: 16px;
+		color: #7F7B67;
 		}
-		</style>
+
+		.streaktxt {
+		font-family: arial;
+		font-size: 16px;
+		color: #7F7B67;
+		}
+
+		#output {
+ 		display: none;
+		}
+	</style>
 	
 	<title>Futufaces</title>
 </head>
 <body>
-<center>
+<table cellspacing="20px" align="center">
+	<tr>
+		<td align="right">
+			<img alt="futurice logo" src="/static/futurice_logo_basic_smaller.png">
+		</td>
+		<td align="left" valign="bottom">
+			<p class="logotxt">Futurice Facegame</p>
+		</td>
+	</tr>
 
-<img alt="futurice logo" src="/static/futurice_logo_basic_smaller.png">
-</br>
-<font class="header" a="#">Face Guessing Game</font>
-</br>
-
-<table cellspacing="80px">
-<tr>
-<td>
-<p id="comment">
-</p>
-</td>
-
-<td>
-
-<form id="nameform" method="post">{% csrf_token %}
-<font class="names">
-		{{ form.name }}
-</font>
-</form>
-
-</td>
-<td>
-
-<img id="face" class="face" src="{% url fumapi:user_photo rncorrect %}">
-
-</td>
-</tr>
+	<tr>
+		<td>
+		</td>
+		<td align="left" valign="bottom">
+			</br>
+			<div id="scoretxt" class="scoretxt">
+			Overall: Correct 0, Wrong 0
+			</div>
+			<div id="streaktxt" class="streaktxt">
+			Streak: Current 0, Highest 0
+			</div>
+		</td>
+	</tr>
 </table>
-
-</br>
-</br>
-</br>
-</br>
-
-</center>
+<div id="output">
+<table cellspacing="40px" align="center">
+	<tr>
+		<td align="right">
+			<form id="nameform" method="post">{% csrf_token %}
+			<font class="names">
+			{{ form.name }}
+			</font>
+			</form>
+			</td>
+		<td align="left">
+			<img alt="current face" id="face" src="{% url fumapi:user_photo rncorrect %}">
+		</td>
+	</tr>
+</table>
+</div>
 </body>
 </html>
