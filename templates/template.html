@@ -10,6 +10,18 @@
 	var currentStreak = 0;
 	var highestStreak = 0;
 
+	jQuery.preloadImages = function() {   
+		for(var i = 0; i<arguments.length; i++) {
+			jQuery("<img>").attr("src", arguments[i]);   
+		} 
+	}
+
+	$(document).ready(function()
+	{
+		$.preloadImages("/static/loader.gif");
+		initialize();
+	});
+
 	function response(responseText)
 	{
 		$('#face').fadeOut(400, function()
@@ -27,6 +39,8 @@
 		{
 			$('#output').fadeIn(700);
 			$('#nameform').attr("disabled", false);
+		}).each(function() {
+    			if(this.complete) $(this).trigger("load");
 		});
 
 		$('li').mouseenter(function(event)
@@ -49,7 +63,7 @@
 				{
 					highestStreak = currentStreak;
 				}
-				$('#streaktxt').html("Streak: Current " + currentStreak + ", Highest " + highestStreak);
+				$('#streaktxt').html("In a row: Current " + currentStreak + ", Highest " + highestStreak);
 				$(this).find("input[type=radio]").attr("checked", "checked");
 				$('#nameform').fadeOut(700);
 				$('#face').fadeOut(700, function()
@@ -66,22 +80,15 @@
 				wrongAnswers += 1;
 				$('#scoretxt').html("Overall: Correct " + correctAnswers + ", Wrong " + wrongAnswers);
 				currentStreak = 0;
-				$('#streaktxt').html("Streak: Current " + currentStreak + ", Highest " + highestStreak);
+				$('#streaktxt').html("In a row: Current " + currentStreak + ", Highest " + highestStreak);
 				$(this).fadeTo(700, 0.35);
 				return false;
 			}
 		});
 
 		var options = {target: '#output', success: response};
-
 		$('#nameform').ajaxForm(options);
 	}
-
-	$(function()
-	{
-		initialize();
-	});
-
 	</script>
 	
 	<style type="text/css">
@@ -144,7 +151,7 @@
 			Overall: Correct 0, Wrong 0
 			</div>
 			<div id="streaktxt" class="streaktxt">
-			Streak: Current 0, Highest 0
+			In a row: Current 0, Highest 0
 			</div>
 		</td>
 	</tr>

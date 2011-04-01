@@ -4,9 +4,8 @@
 FUMAPI_CONNECTION = {
     'USER': 'apitest',
     'PASSWORD': 'NooBoo6879,.-',
-    'ENGINE': 'fumapi.connection.HttpConnection',
     'SERVERS': ['https://fum3.futurice.com/api/',],
-    'SITE_ROOT': '/',
+    'FUMAPI_ROOT': '/',
 }
 FUMAPI_LOGFILE = 'access.log'
 # ----
