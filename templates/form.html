@@ -1,8 +1,11 @@
 <script type="text/javascript">
 	function rnCheck(){
 		rnCorrect = "{{ rncorrect }}";
+		skippable = true;
 		$('#nameform').fadeIn(700);
 		$('#face').fadeIn(700);
+		$('#correctnum').html(correctAnswers);
+		$('#wrongnum').html(wrongAnswers);
 	}	
 </script>
 
@@ -12,7 +15,7 @@
 	}
 </style>
 
-<table cellspacing="40px" align="center">
+<table cellspacing="35px" align="center">
 	<tr>
 		<td align="right">
 			<form id="nameform" method="post">{% csrf_token %}

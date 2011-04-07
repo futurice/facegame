@@ -1,7 +1,7 @@
 <html>
 <head>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script src="https://github.com/malsup/form/raw/master/jquery.form.js"></script>
+	<script src="/static/jquery.min.js"></script>
+	<script src="/static/jquery.form.js"></script>
 	
 	<script type="text/javascript">
 	var rnCorrect = "{{ rncorrect }}";
@@ -9,6 +9,8 @@
 	var wrongAnswers = 0;
 	var currentStreak = 0;
 	var highestStreak = 0;
+	var skips = 0;
+	var skippable = true;
 
 	jQuery.preloadImages = function() {   
 		for(var i = 0; i<arguments.length; i++) {
@@ -16,14 +18,23 @@
 		} 
 	}
 
-	$(document).ready(function()
-	{
-		$.preloadImages("/static/loader.gif");
+	$(document).ready(function() {
+		$.preloadImages("/static/images/loader.gif");
+
+		soundHandle1 = document.getElementById('soundHandle1');
+		soundHandle2 = document.getElementById('soundHandle2');
+		$("#soundHandle1").attr('preload', 'auto');
+		$("#soundHandle2").attr('preload', 'auto');
+		soundHandle1.src = '/static/sounds/correct.ogg';
+		$(soundHandle1).bind("ended", function() {
+			$('#nameform').submit();
+		});
+		soundHandle2.src = '/static/sounds/wrong.ogg';
+
 		initialize();
 	});
 
-	function response(responseText)
-	{
+	function response(responseText)	{
 		$('#face').fadeOut(400, function()
 		{
 			$('#output').css("display", "none");
@@ -33,8 +44,8 @@
 		});
 	}
 
-	function initialize()
-	{
+	function initialize() {
+		$('.skipimg').delay(2000).fadeIn(1000);
 		$('#face').load(function()
 		{
 			$('#output').fadeIn(700);
@@ -51,37 +62,71 @@
 			$(this).css("background-color", "#FFFFFF");
 		});
 
+		$('.skipimg').click(function(event)
+		{
+			$(this).unbind('click');
+			skips += 1;
+			currentStreak = 0;
+			$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
+			$(this).fadeOut(300);
+			$('#nameform').fadeOut(600);
+			$('#face').fadeOut(600, function()
+			{
+				$(this).attr('src', '/static/images/loader.gif');
+				$(this).fadeIn(400);
+			});
+			$('#nameform').submit();
+			return false;
+		});
+
 		$('li').click(function(event)
 		{
 			if ($(this).find("input[type=radio]").val() == rnCorrect)
 			{
+				soundHandle1.load();
+				soundHandle1.play();
 				$("li").unbind('click');
 				correctAnswers += 1;
-				$('#scoretxt').html("Overall: Correct " + correctAnswers + ", Wrong " + wrongAnswers);
 				currentStreak += 1;
 				if (currentStreak > highestStreak)
 				{
 					highestStreak = currentStreak;
 				}
-				$('#streaktxt').html("In a row: Current " + currentStreak + ", Highest " + highestStreak);
-				$(this).find("input[type=radio]").attr("checked", "checked");
-				$('#nameform').fadeOut(700);
-				$('#face').fadeOut(700, function()
+				if (skippable == true)
 				{
-					$(this).attr('src', '/static/loader.gif');
+					skippable = false;
+				}
+				$('#correctnum').html(correctAnswers);
+				$(this).find("input[type=radio]").attr("checked", "checked");
+				$('#nameform').fadeOut(600);
+				$('#face').fadeOut(600, function()
+				{
+					$(this).attr('src', '/static/images/loader.gif');
 					$(this).fadeIn(400);
 				});
-				$('#nameform').submit();
+				$('.skipimg').fadeOut(500);
+				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function() {
+					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
+				});
 				return false;
 			}
 			else
 			{
+				soundHandle2.load();
+				soundHandle2.play();
 				$(this).unbind('click');
 				wrongAnswers += 1;
-				$('#scoretxt').html("Overall: Correct " + correctAnswers + ", Wrong " + wrongAnswers);
+				if (skippable == true)
+				{
+					skippable = false;
+				}
+				$('#wrongnum').html(wrongAnswers);
+				$('.skipimg').fadeOut(500);
 				currentStreak = 0;
-				$('#streaktxt').html("In a row: Current " + currentStreak + ", Highest " + highestStreak);
 				$(this).fadeTo(700, 0.35);
+				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function() {
+					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
+				});
 				return false;
 			}
 		});
@@ -108,56 +153,58 @@
 
 		.logotxt {
 		font-family: arial;
-		font-size: 35px;
+		font-size: 31px;
 		color: #7F7B67;
+		line-height: 0%;
 		}
 
 		.scoretxt {
 		font-family: arial;
-		font-size: 16px;
+		font-size: 19px;
 		color: #7F7B67;
 		}
 
-		.streaktxt {
-		font-family: arial;
-		font-size: 16px;
-		color: #7F7B67;
+		.correctimg, .wrongimg, .skipimg {
+		vertical-align: middle;
+		}
+
+		.skipimg {
+		float: right;
 		}
 
 		#output {
  		display: none;
+		}
+
+		.skip {
+		font-family: arial;
+		font-size: 11px;
+		color: #7F7B67;
 		}
 	</style>
 	
 	<title>Futufaces</title>
 </head>
 <body>
-<table cellspacing="20px" align="center">
-	<tr>
-		<td align="right">
-			<img alt="futurice logo" src="/static/futurice_logo_basic_smaller.png">
-		</td>
-		<td align="left" valign="bottom">
-			<p class="logotxt">Futurice Facegame</p>
-		</td>
-	</tr>
-
+<audio id="soundHandle1" style="display: none;"></audio>
+<audio id="soundHandle2" style="display: none;"></audio>
+<table cellspacing="8px" align="center">
 	<tr>
 		<td>
+			<img alt="futurice logo" src="/static/images/logo.png">
 		</td>
-		<td align="left" valign="bottom">
-			</br>
+		<td valign="bottom">
+			<p class="logotxt">
+				Futurice Facegame
+			</p>
 			<div id="scoretxt" class="scoretxt">
-			Overall: Correct 0, Wrong 0
-			</div>
-			<div id="streaktxt" class="streaktxt">
-			In a row: Current 0, Highest 0
+				<img alt="correct" src="/static/images/correct.gif" class="correctimg"> <span id="correctnum">0</span> <img alt="wrong" src="/static/images/wrong.gif" class="wrongimg"> <span id="wrongnum">0</span> <img alt="skip" src="/static/images/skip.png" class="skipimg" style="display: none;">
 			</div>
 		</td>
 	</tr>
 </table>
 <div id="output">
-<table cellspacing="40px" align="center">
+<table cellspacing="35px" align="center" id="gametable">
 	<tr>
 		<td align="right">
 			<form id="nameform" method="post">{% csrf_token %}

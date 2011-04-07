@@ -1,100 +1,105 @@
 <html>
 <head>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-	<script src="https://github.com/malsup/form/raw/master/jquery.form.js"></script>
+	<script src="/static/jquery.min.js"></script>
+	<script src="/static/jquery.form.js"></script>
 	
 	<script type="text/javascript">
 	var rnCorrect = "{{ rncorrect }}";
-	var prevrnCorrect = "{{ prevrncorrect }}";
-	var time = "{{ time }}";
+	var correctAnswers = 0;
+	var wrongAnswers = 0;
+	var currentStreak = 0;
+	var highestStreak = 0;
 
-	function initialize() {
-		$('#face' + rnCorrect).load(function(event){
-			$('#output').fadeIn('slow');
-		});
-
-		$(':radio').click(function(event){
-			if ($(this).val() == rnCorrect)
-			{
-				if (time == 0)
-				{
-					//happens 1. time
-					$('#output').animate({ opacity: 0.4, marginRight: '700px' }, 1000);
-					$(this).attr("checked", "checked");
-					$('#face' + rnCorrect).animate({ height: $('#face' + rnCorrect).height() * 0.6 + 'px', width: $('#face' + rnCorrect).width() * 0.6 + 'px' }, 1000);
-					$('li').animate({ "font-size": "-=10px", "line-height": "-=26px" }, 1000);
-					/*$('#table1').animate({ "cellspacing": "-=20px" }, 1000);*/
-					$('#nameform' + rnCorrect).submit();
-				}
-				else
-				{
-					if (time%2)
-					{
-						//happens 2. 4. 6... time
-						$('#output').fadeOut('fast');
-						$('#output').animate({ marginLeft: '700px' }, 1000);
-						$('#output2').animate({ opacity: 0.4, marginRight: '700px' }, 1000);
-						$(this).attr("checked", "checked");
-						$('#face').animate({ height: $('#face').height() * 0.6 + 'px', width: $('#face').width() * 0.6 + 'px' }, 1000);
-						$('li').animate({ "font-size": "-=10px", "line-height": "-=26px" }, 1000);
-						/*$('#table1').animate({ "cellspacing": "-=20px" }, 1000);*/
-						$('#nameform' + rnCorrect).submit();
-					}
-					else
-					{
-						//happens 3. 5. 7... time
-						$('#output2').fadeOut('fast');
-						$('#output').animate({ opacity: 0.4, marginRight: '700px' }, 1000);
-						$(this).attr("checked", "checked");
-						$('#face').animate({ height: $('#face').height() * 0.6 + 'px', width: $('#face').width() * 0.6 + 'px' }, 1000);
-						$('li').animate({ "font-size": "-=10px", "line-height": "-=26px" }, 1000);
-						/*$('#table1').animate({ "cellspacing": "-=20px" }, 1000);*/
-						$('#nameform' + rnCorrect).submit();
-					}
-				}
-			}
-			else
-			{
-			$(this).parent().fadeTo("slow", 0.35);
-			}
-		}); 
-
-		/*var options = {target: '#output', beforeSubmit: showRequest, success: showResponse};*/
-		var options = {success: showResponse};
-
-		$('#nameform').ajaxForm(options);
+	jQuery.preloadImages = function() {   
+		for(var i = 0; i<arguments.length; i++) {
+			jQuery("<img>").attr("src", arguments[i]);   
+		} 
 	}
 
-	$(function(){		
+	$(document).ready(function() {
+		$.preloadImages("/static/images/loader.gif");
+		$("#soundHandle1").attr('preload', 'auto');
+		$("#soundHandle2").attr('preload', 'auto');
 		initialize();
 	});
 
-	/*function showRequest(formData, jqForm, options) {
-		var queryString = $.param(formData); 	 
-		alert('About to submit: \n\n' + queryString);
-		return true;
-	} */
-
-	function showResponse(responseText, time, xhr, $form) {
-		/*alert('status: ' + statusText + '\n\nresponseText: \n' + responseText);*/
-		if (time%2)
+	function response(responseText)	{
+		$('#face').fadeOut(400, function()
 		{
-			//happens 2. 4. 6... time
+			$('#output').css("display", "none");
 			$('#output').html(responseText);
-		}
-		else
-		{
-			//happens 1. 3. 5... time
-			$('#output2').html(responseText);
-		}
-		$('#output2').html(responseText);
-		/*document.getElementById('#nameform' + rnCorrect).setAttribute("id", '#nameform' + prevrnCorrect);
-		document.getElementById('#face' + rnCorrect).setAttribute("id", '#face' + prevrnCorrect);*/
-		rnCheck();
-		/*alert(rnCorrect);*/
-		initialize();
-	} 
+			rnCheck();
+			initialize();
+		});
+	}
 
+	function initialize() {
+		$('#face').load(function()
+		{
+			$('#output').fadeIn(700);
+			$('#nameform').attr("disabled", false);
+		}).each(function() {
+    			if(this.complete) $(this).trigger("load");
+		});
+
+		$('li').mouseenter(function(event)
+		{
+			$(this).css("background-color", "#BFBAA4");
+		}).mouseleave(function(event)
+		{
+			$(this).css("background-color", "#FFFFFF");
+		});
+
+		$('li').click(function(event)
+		{
+			if ($(this).find("input[type=radio]").val() == rnCorrect)
+			{
+				soundHandle1 = document.getElementById('soundHandle1');
+				soundHandle1.src = '/static/sounds/correct.ogg';
+				$(soundHandle1).bind("ended", function() {
+					$('#nameform').submit();
+				});
+				soundHandle1.play();
+				$("li").unbind('click');
+				correctAnswers += 1;
+				currentStreak += 1;
+				if (currentStreak > highestStreak)
+				{
+					highestStreak = currentStreak;
+				}
+				$('#scoretxt').html("<img alt='correct' src='/static/images/correct.gif' class='correctimg'> " + correctAnswers + " <img alt='wrong' src='/static/images/wrong.gif' class='wrongimg'> " + wrongAnswers);
+				$(this).find("input[type=radio]").attr("checked", "checked");
+				$('#nameform').fadeOut(700);
+				$('#face').fadeOut(700, function()
+				{
+					$(this).attr('src', '/static/images/loader.gif');
+					$(this).fadeIn(400);
+				});
+				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function() {
+					$(".correctimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
+				});
+				return false;
+			}
+			else
+			{
+				soundHandle2 = document.getElementById('soundHandle2');
+				soundHandle2.src = '/static/sounds/wrong.ogg';
+				soundHandle2.play();
+				$(this).unbind('click');
+				wrongAnswers += 1;
+				$('#scoretxt').html("<img alt='correct' src='/static/images/correct.gif' class='correctimg'> " + correctAnswers + " <img alt='wrong' src='/static/images/wrong.gif' class='wrongimg'> " + wrongAnswers);
+				currentStreak = 0;
+				$(this).fadeTo(700, 0.35);
+				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function() {
+					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
+				});
+				return false;
+			}
+		});
+
+		var options = {target: '#output', success: response};
+		$('#nameform').ajaxForm(options);
+	}
 	</script>
 	
 	<style type="text/css">
@@ -114,47 +119,76 @@
 
 		.logotxt {
 		font-family: arial;
-		font-size: 35px;
+		font-size: 31px;
 		color: #7F7B67;
 		}
 
-		/*#output, #output2 {
-		display: none;
-		}*/
+		.scoretxt {
+		font-family: arial;
+		font-size: 19px;
+		color: #7F7B67;
+		}
+
+		.correctimg, .wrongimg, .rowimg {
+		vertical-align: middle;
+		}
+
+		#output {
+ 		display: none;
+		}
+
+		.skip {
+		font-family: arial;
+		font-size: 11px;
+		color: #7F7B67;
+		}
 	</style>
 	
 	<title>Futufaces</title>
 </head>
 <body>
-<center>
-<p class="logotxt"><img alt="futurice logo" src="/static/futurice_logo_basic_smaller.png">Futurice Facegame</p>
-
-<p>
-<div id="output">
-<table border="1" cellspacing="50px" id="table1">
-	<tr id="tr">
+<audio id="soundHandle1" style="display: none;"></audio>
+<audio id="soundHandle2" style="display: none;"></audio>
+<table cellspacing="8px" align="center">
+	<tr>
+		<td rowspan="2">
+			<img alt="futurice logo" src="/static/images/futurice_logo_basic_smallersmaller.png">
+		</td>
+	</tr>
+	<tr>
 		<td>
-			<form id="nameform{{ rncorrect }}" method="post">{% csrf_token %}
+			<p class="logotxt">
+				Futurice Facegame
+			</p>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td valign="bottom">
+			<div id="scoretxt" class="scoretxt">
+				<img alt="correct" src="/static/images/correct.gif" class="correctimg"> 0 <img alt="wrong" src="/static/images/wrong.gif" class="wrongimg"> 0
+			</div>
+		</td>
+		<td valign="bottom">
+			<img alt="skip" src="/static/images/skip.png">
+		</td>
+	</tr>
+</table>
+<div id="output">
+<table cellspacing="35px" align="center" id="gametable">
+	<tr>
+		<td align="right">
+			<form id="nameform" method="post">{% csrf_token %}
 			<font class="names">
 			{{ form.name }}
 			</font>
 			</form>
-		</td>
-		<td>
-			<img id="face{{ rncorrect }}" class="face" src="{% url fumapi:user_photo rncorrect %}">
+			</td>
+		<td align="left">
+			<img id="face" src="{% url fumapi:user_photo rncorrect %}">
 		</td>
 	</tr>
 </table>
 </div>
-<div id="output2">
-</div>
-</p>
-<p>
-rncorrect = {{ rncorrect }}
-prevrncorrect = {{ prevrncorrect }}
-time = {{ time }}
-</p>
-
-</center>
 </body>
 </html>

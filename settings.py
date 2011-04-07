@@ -1,4 +1,5 @@
 # Django settings for facegame project.
+import os
 
 # ---- FUM API settings
 FUMAPI_CONNECTION = {
@@ -10,7 +11,7 @@ FUMAPI_CONNECTION = {
 FUMAPI_LOGFILE = 'access.log'
 # ----
 
-STATIC_ROOT = '/home/jsaa/facegame/images'
+STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
 DEBUG = True
@@ -58,7 +59,7 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/jsaa/facegame/images'
+MEDIA_ROOT = os.path.abspath("media")
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
