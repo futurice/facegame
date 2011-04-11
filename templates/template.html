@@ -3,8 +3,8 @@
 	<script src="/static/jquery.min.js"></script>
 	<script src="/static/jquery.form.js"></script>
 
-	<script type='text/javascript' src='/javascripts/jquery.tipsy.js'></script>
-	<link rel="stylesheet" href="/stylesheets/tipsy.css" type="text/css" />
+	<script type='text/javascript' src='/static/jquery.tipsy.js'></script>
+	<link rel="stylesheet" href="/static/tipsy.css" type="text/css" />
 	
 	<script type="text/javascript">
 	var rnCorrect = "{{ rncorrect }}";
@@ -14,7 +14,7 @@
 	var highestStreak = 0;
 	var skips = 0;
 	var skippable = true;
-	var mute = true;
+	var mute = false;
 	var tooltips = false;
 
 	jQuery.preloadImages = function()
@@ -34,27 +34,35 @@
 		$("#soundHandle1").attr('preload', 'auto');
 		$("#soundHandle2").attr('preload', 'auto');
 		soundHandle1.src = '/static/sounds/correct.ogg';
-		$(soundHandle1).bind("ended", function() {
+		$(soundHandle1).bind("ended", function()
+		{
 			$('#nameform').submit();
 		});
 		soundHandle2.src = '/static/sounds/wrong.ogg';
 
-		$('#scoretxt img[rel=tipsy]').tipsy({trigger: 'manual'});
-
-		$('.helpimg').click(function(event)
+		$('.muteimg').bind("click", function(event)
 		{
-			if (tooltips == false)
+			if (mute == true)
 			{
-				$("#scoretxt img[rel=tipsy]").tipsy("show");
-				toolstips = true
-				return false;
+				mute = false;
+				$('.muteimg').attr('src', '/static/images/muteoff.png');
 			} else
 			{
-				$("#scoretxt img[rel=tipsy]").tipsy("hide");
-				tooltips = false
-				return false;
+				mute = true;
+				$('.muteimg').attr('src', '/static/images/muteon.png');
 			}
 		});
+
+		$('.helpimg').bind("click", function(event)
+		{
+			toggleTooltips();
+		});
+
+		$('.correctimg').tipsy({trigger: 'manual', html: true, gravity: 'n'});
+		$('.wrongimg').tipsy({trigger: 'manual', html: true, gravity: 'se'});
+		$('.skipimg').tipsy({trigger: 'manual', html: true, gravity: 'nw'});
+		$('.muteimg').tipsy({trigger: 'manual', html: true, gravity: 's'});
+		$('.helpimg').tipsy({trigger: 'manual', html: true, gravity: 'w'});
 
 		initialize();
 	});
@@ -68,6 +76,29 @@
 			rnCheck();
 			initialize();
 		});
+	}
+
+	function toggleTooltips()
+	{
+		if (tooltips == false)
+		{
+			$('.correctimg').tipsy("show");
+			$('.wrongimg').tipsy("show");
+			$('.skipimg').tipsy("show");
+			$('.muteimg').tipsy("show");
+			$('.helpimg').tipsy("show");
+			tooltips = true;
+			return false;
+		} else
+		{
+			$('.correctimg').tipsy("hide");
+			$('.wrongimg').tipsy("hide");
+			$('.skipimg').tipsy("hide");
+			$('.muteimg').tipsy("hide");
+			$('.helpimg').tipsy("hide");
+			tooltips = false;
+			return false;
+		}
 	}
 
 	function initialize()
@@ -92,7 +123,8 @@
 
 		$('.skipimg').click(function(event)
 		{
-			$(this).unbind('click');
+			$(this).fadeTo(500, 0.3).unbind('click');
+			$("li").unbind('click');
 			skips += 1;
 			currentStreak = 0;
 			$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
@@ -106,19 +138,6 @@
 			return false;
 		});
 
-		$('.muteimg').click(function(event)
-		{
-			if (mute == true)
-			{
-				mute = false;
-				$('.muteimg').attr('src', '/static/images/muteoff.png');
-			} else
-			{
-				mute = true;
-				$('.muteimg').attr('src', '/static/images/muteon.png');
-			}
-		});
-
 		$('li').click(function(event)
 		{
 			if ($(this).find("input[type=radio]").val() == rnCorrect)
@@ -129,7 +148,6 @@
 					soundHandle1.play();
 				}
 				$("li").unbind('click');
-				$(".muteimg").unbind('click');
 				$(".skipimg").fadeTo(500, 0.3).unbind('click');
 				correctAnswers += 1;
 				currentStreak += 1;
@@ -241,7 +259,13 @@
 				Futurice Facegame
 			</p>
 			<div id="scoretxt" class="scoretxt">
-				<img alt="correct" rel="tipsy" title="Well hello there" src="/static/images/correct.gif" class="correctimg"> <span id="correctnum">0</span> <img alt="wrong" rel="tipsy" title="Well hello there" src="/static/images/wrong.gif" class="wrongimg"> <span id="wrongnum">0</span> <img alt="skip" rel="tipsy" title="Well hello there" src="/static/images/skip.png" class="skipimg"> <img alt="mute" rel="tipsy" title="Well hello there" src="/static/images/muteon.png" class="muteimg"> <img alt="help" src="/static/images/help.png" class="helpimg">
+				<img alt="correct" title="correct answers" src="/static/images/correct.gif" class="correctimg">
+					<span id="correctnum">0</span>
+				<img alt="wrong" title="wrong answers" src="/static/images/wrong.gif" class="wrongimg">
+					<span id="wrongnum">0</span>
+				<img alt="skip" title="skip<br>(use if no photo)" src="/static/images/skip.png" class="skipimg">
+				<img alt="mute" title="mute/unmute" src="/static/images/muteoff.png" class="muteimg">
+				<img alt="help" title="toggle help" src="/static/images/help.png" class="helpimg">
 			</div>
 		</td>
 	</tr>

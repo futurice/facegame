@@ -28,9 +28,9 @@ def index(request):
 				used_names.append(correct_user)
 				print "takes a little"
 				formchoices = [(user, read('user', user)['cn']) for user in random_users]
+				print "while"
 				form.fields['name'].choices = formchoices
 				request.session['choices'] = formchoices
-				print "while"
 				request.session['namesession'] = random_users, correct_user
 				request.session['used_names'] = used_names
 				{'rnCorrect': correct_user}
