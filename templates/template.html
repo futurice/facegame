@@ -2,6 +2,9 @@
 <head>
 	<script src="/static/jquery.min.js"></script>
 	<script src="/static/jquery.form.js"></script>
+
+	<script type='text/javascript' src='/javascripts/jquery.tipsy.js'></script>
+	<link rel="stylesheet" href="/stylesheets/tipsy.css" type="text/css" />
 	
 	<script type="text/javascript">
 	var rnCorrect = "{{ rncorrect }}";
@@ -11,14 +14,19 @@
 	var highestStreak = 0;
 	var skips = 0;
 	var skippable = true;
+	var mute = true;
+	var tooltips = false;
 
-	jQuery.preloadImages = function() {   
-		for(var i = 0; i<arguments.length; i++) {
+	jQuery.preloadImages = function()
+	{
+		for(var i = 0; i<arguments.length; i++)
+		{
 			jQuery("<img>").attr("src", arguments[i]);   
 		} 
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function()
+	{
 		$.preloadImages("/static/images/loader.gif");
 
 		soundHandle1 = document.getElementById('soundHandle1');
@@ -31,10 +39,28 @@
 		});
 		soundHandle2.src = '/static/sounds/wrong.ogg';
 
+		$('#scoretxt img[rel=tipsy]').tipsy({trigger: 'manual'});
+
+		$('.helpimg').click(function(event)
+		{
+			if (tooltips == false)
+			{
+				$("#scoretxt img[rel=tipsy]").tipsy("show");
+				toolstips = true
+				return false;
+			} else
+			{
+				$("#scoretxt img[rel=tipsy]").tipsy("hide");
+				tooltips = false
+				return false;
+			}
+		});
+
 		initialize();
 	});
 
-	function response(responseText)	{
+	function response(responseText)
+	{
 		$('#face').fadeOut(400, function()
 		{
 			$('#output').css("display", "none");
@@ -44,14 +70,16 @@
 		});
 	}
 
-	function initialize() {
-		$('.skipimg').delay(2000).fadeIn(1000);
+	function initialize()
+	{
+		$('.skipimg').fadeTo(500, 1.0);
 		$('#face').load(function()
 		{
 			$('#output').fadeIn(700);
 			$('#nameform').attr("disabled", false);
-		}).each(function() {
-    			if(this.complete) $(this).trigger("load");
+		}).each(function()
+		{
+			if(this.complete) $(this).trigger("load");
 		});
 
 		$('li').mouseenter(function(event)
@@ -68,7 +96,6 @@
 			skips += 1;
 			currentStreak = 0;
 			$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
-			$(this).fadeOut(300);
 			$('#nameform').fadeOut(600);
 			$('#face').fadeOut(600, function()
 			{
@@ -79,13 +106,31 @@
 			return false;
 		});
 
+		$('.muteimg').click(function(event)
+		{
+			if (mute == true)
+			{
+				mute = false;
+				$('.muteimg').attr('src', '/static/images/muteoff.png');
+			} else
+			{
+				mute = true;
+				$('.muteimg').attr('src', '/static/images/muteon.png');
+			}
+		});
+
 		$('li').click(function(event)
 		{
 			if ($(this).find("input[type=radio]").val() == rnCorrect)
 			{
-				soundHandle1.load();
-				soundHandle1.play();
+				if (mute == false)
+				{
+					soundHandle1.load();
+					soundHandle1.play();
+				}
 				$("li").unbind('click');
+				$(".muteimg").unbind('click');
+				$(".skipimg").fadeTo(500, 0.3).unbind('click');
 				correctAnswers += 1;
 				currentStreak += 1;
 				if (currentStreak > highestStreak)
@@ -104,27 +149,35 @@
 					$(this).attr('src', '/static/images/loader.gif');
 					$(this).fadeIn(400);
 				});
-				$('.skipimg').fadeOut(500);
-				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function() {
+				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function()
+				{
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
+				if (mute == true)
+				{
+					$('#nameform').submit();
+				}
 				return false;
 			}
 			else
 			{
-				soundHandle2.load();
-				soundHandle2.play();
+				if (mute == false)
+				{
+					soundHandle2.load();
+					soundHandle2.play();
+				}
 				$(this).unbind('click');
+				$(".skipimg").fadeTo(500, 0.3).unbind('click');
 				wrongAnswers += 1;
 				if (skippable == true)
 				{
 					skippable = false;
 				}
 				$('#wrongnum').html(wrongAnswers);
-				$('.skipimg').fadeOut(500);
 				currentStreak = 0;
 				$(this).fadeTo(700, 0.35);
-				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function() {
+				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function()
+				{
 					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
 				});
 				return false;
@@ -164,22 +217,12 @@
 		color: #7F7B67;
 		}
 
-		.correctimg, .wrongimg, .skipimg {
+		.correctimg, .wrongimg, .skipimg, .muteimg, .helpimg {
 		vertical-align: middle;
-		}
-
-		.skipimg {
-		float: right;
 		}
 
 		#output {
  		display: none;
-		}
-
-		.skip {
-		font-family: arial;
-		font-size: 11px;
-		color: #7F7B67;
 		}
 	</style>
 	
@@ -198,7 +241,7 @@
 				Futurice Facegame
 			</p>
 			<div id="scoretxt" class="scoretxt">
-				<img alt="correct" src="/static/images/correct.gif" class="correctimg"> <span id="correctnum">0</span> <img alt="wrong" src="/static/images/wrong.gif" class="wrongimg"> <span id="wrongnum">0</span> <img alt="skip" src="/static/images/skip.png" class="skipimg" style="display: none;">
+				<img alt="correct" rel="tipsy" title="Well hello there" src="/static/images/correct.gif" class="correctimg"> <span id="correctnum">0</span> <img alt="wrong" rel="tipsy" title="Well hello there" src="/static/images/wrong.gif" class="wrongimg"> <span id="wrongnum">0</span> <img alt="skip" rel="tipsy" title="Well hello there" src="/static/images/skip.png" class="skipimg"> <img alt="mute" rel="tipsy" title="Well hello there" src="/static/images/muteon.png" class="muteimg"> <img alt="help" src="/static/images/help.png" class="helpimg">
 			</div>
 		</td>
 	</tr>
