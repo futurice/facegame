@@ -8,6 +8,7 @@ from faceguessing.views import index
 
 urlpatterns = patterns('',
     (r'^', include('fumapi.urls', namespace='fumapi')),
+    (r'^sentry/', include('sentry.urls')),
     url(r'^thegame/$', index),
 	
 	(r'^static/(?P<path>.*)$', 'django.views.static.serve',

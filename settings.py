@@ -14,8 +14,8 @@ FUMAPI_LOGFILE = 'access.log'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = True
 
 ADMINS = (
     ('admin', 'admin@change.this'),
@@ -110,6 +110,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'fumapi',
+    'indexer',
+    'paging',
+    'sentry',
+    'sentry.client',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

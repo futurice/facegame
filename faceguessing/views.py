@@ -27,7 +27,9 @@ def index(request):
 				random_users, correct_user = random_user(used_names, names)
 				used_names.append(correct_user)
 				print "takes a little"
-				formchoices = [(user, read('user', user)['cn']) for user in random_users]
+				user_dicts = [read('user', user) for user in random_users]
+				formchoices = [(user['uid'], user['cn']) for user in user_dicts]
+				#formchoices = [(user, read('user', user)['cn']) for user in random_users]
 				print "while"
 				form.fields['name'].choices = formchoices
 				request.session['choices'] = formchoices
@@ -41,12 +43,10 @@ def index(request):
 			print "WRONG ANSWER"
 			print "I don't even know how you got here"
 			print "probably because you posted TWICE! check your codez"
-	else:
-		form = NameForm()
-		used_names = []
-		request.session['used_names'] = used_names
-		request.session.pop('choices', None)
-
+	form = NameForm()
+	used_names = []
+	request.session['used_names'] = used_names
+	request.session.pop('choices', None)
 	random_users, correct_user = random_user(used_names, names)
 	used_names.append(correct_user)
 	print "this is kinda"

@@ -63,6 +63,7 @@
 		$('.skipimg').tipsy({trigger: 'manual', html: true, gravity: 'nw'});
 		$('.muteimg').tipsy({trigger: 'manual', html: true, gravity: 's'});
 		$('.helpimg').tipsy({trigger: 'manual', html: true, gravity: 'w'});
+		$('.logoimg').tipsy({trigger: 'manual', html: true, gravity: 'e'});
 
 		initialize();
 	});
@@ -87,6 +88,7 @@
 			$('.skipimg').tipsy("show");
 			$('.muteimg').tipsy("show");
 			$('.helpimg').tipsy("show");
+			$('.logoimg').tipsy("show");
 			tooltips = true;
 			return false;
 		} else
@@ -96,6 +98,7 @@
 			$('.skipimg').tipsy("hide");
 			$('.muteimg').tipsy("hide");
 			$('.helpimg').tipsy("hide");
+			$('.logoimg').tipsy("hide");
 			tooltips = false;
 			return false;
 		}
@@ -252,7 +255,7 @@
 <table cellspacing="8px" align="center">
 	<tr>
 		<td>
-			<img alt="futurice logo" src="/static/images/logo.png">
+			<img alt="futurice logo" title="Futurice Facegame, mainly designed for new employees to get familiar with the names and faces around Futurice. Don't worry about guessing wrong, there's no losing in this game.<br>See how many you can recognize!" src="/static/images/logo.png" class="logoimg">
 		</td>
 		<td valign="bottom">
 			<p class="logotxt">
