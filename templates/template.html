@@ -107,13 +107,20 @@
 	function initialize()
 	{
 		$('.skipimg').fadeTo(500, 1.0);
+		if( $.browser.opera ){
+			$('#output').fadeIn(700);
+			$('#nameform').attr("disabled", false);
+		}
 		$('#face').load(function()
 		{
 			$('#output').fadeIn(700);
 			$('#nameform').attr("disabled", false);
 		}).each(function()
 		{
-			if(this.complete) $(this).trigger("load");
+			if (this.complete)
+			{
+				$(this).trigger("load");
+			}
 		});
 
 		$('li').mouseenter(function(event)
