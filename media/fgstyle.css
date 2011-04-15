@@ -1,0 +1,38 @@
+ul {
+list-style: none;
+}
+
+label {
+padding: 8px;
+}
+
+input[type="radio"] {
+display: none;
+}
+
+.names {
+font-family: arial;
+font-size: 30px;
+line-height: 75px;
+}
+
+.logotxt {
+font-family: arial;
+font-size: 31px;
+color: #7F7B67;
+line-height: 0%;
+}
+
+.scoretxt {
+font-family: arial;
+font-size: 17px;
+color: #7F7B67;
+}
+
+.correctimg, .wrongimg, .rowimg, .skipimg, .muteimg, .helpimg {
+vertical-align: middle;
+}
+
+#output {
+display: none;
+}
