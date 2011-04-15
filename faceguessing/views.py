@@ -40,9 +40,7 @@ def index(request):
 			else:
 				print "form was not valid"
 		else:
-			print "WRONG ANSWER"
-			print "I don't even know how you got here"
-			print "probably because you posted TWICE! check your codez"
+			print "you probably got here because you posted TWICE! check your codez"
 	form = NameForm()
 	used_names = []
 	request.session['used_names'] = used_names
