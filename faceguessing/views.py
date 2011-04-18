@@ -26,11 +26,9 @@ def index(request):
 				used_names = request.session.setdefault('used_names', [])
 				random_users, correct_user = random_user(used_names, names)
 				used_names.append(correct_user)
-				print "takes a little"
 				user_dicts = [read('user', user) for user in random_users]
 				formchoices = [(user['uid'], user['cn']) for user in user_dicts]
 				#formchoices = [(user, read('user', user)['cn']) for user in random_users]
-				print "while"
 				form.fields['name'].choices = formchoices
 				request.session['choices'] = formchoices
 				request.session['namesession'] = random_users, correct_user
@@ -40,16 +38,14 @@ def index(request):
 			else:
 				print "form was not valid"
 		else:
-			print "you probably got here because you posted TWICE! check your codez"
+			print "form had invalid name, probably because it was posted twice"
 	form = NameForm()
 	used_names = []
 	request.session['used_names'] = used_names
 	request.session.pop('choices', None)
 	random_users, correct_user = random_user(used_names, names)
 	used_names.append(correct_user)
-	print "this is kinda"
 	form.fields['name'].choices = [(user, read('user', user)['cn']) for user in random_users]
-	print "slow"
 	request.session['namesession'] = random_users, correct_user
 	request.session['used_names'] = used_names
 	return render_to_response('template.html', {'form': form, 'rncorrect': correct_user}, context_instance=RequestContext(request, {}))
