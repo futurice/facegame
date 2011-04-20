@@ -1,17 +1,17 @@
 <html>
 <head>
-	<script src="/static/jquery.min.js"></script>
-	<script src="/static/jquery.form.js"></script>
+	<script src="/facegame/static/jquery.min.js"></script>
+	<script src="/facegame/static/jquery.form.js"></script>
 
-	<script type='text/javascript' src='/static/jquery.tipsy.js'></script>
-	<link rel="stylesheet" href="/static/tipsy.css" type="text/css" />
+	<script type='text/javascript' src='/facegame/static/jquery.tipsy.js'></script>
+	<link rel="stylesheet" href="/facegame/static/tipsy.css" type="text/css" />
 
 	<script type="text/javascript">
 		var rnCorrect = "{{ rncorrect }}";
 	</script>
 	
-	<script src="/static/fgscript.js"></script>
-	<link rel="stylesheet" href="/static/fgstyle.css" type="text/css" />
+	<script src="/facegame/static/fgscript.js"></script>
+	<link rel="stylesheet" href="/facegame/static/fgstyle.css" type="text/css" />
 	
 	<title>Futufaces</title>
 </head>
@@ -21,23 +21,23 @@
 <table cellspacing="8px" align="center">
 	<tr>
 		<td>
-			<img alt="futurice logo" title="Futurice Facegame, mainly designed for new employees to get familiar with the names and faces around Futurice. Don't worry about guessing wrong, there's no losing in this game.<br>See how many you can recognize!" src="/static/images/logo.png" class="logoimg">
+			<img alt="futurice logo" title="Futurice Facegame, mainly designed for new employees to get familiar with the names and faces around Futurice. Don't worry about guessing wrong, there's no losing in this game. See how many you can recognize!" src="/facegame/static/images/logo.png" class="logoimg">
 		</td>
 		<td valign="bottom">
 			<p class="logotxt">
 				Futurice Facegame
 			</p>
 			<div id="scoretxt" class="scoretxt">
-				<img alt="correct" title="correct answers" src="/static/images/correct.gif" class="correctimg">
+				<img alt="correct" title="sum of correct answers" src="/facegame/static/images/correct.gif" class="correctimg">
 					<span id="correctnum">0</span>
-				<img alt="wrong" title="wrong answers" src="/static/images/wrong.gif" class="wrongimg">
+				<img alt="wrong" title="sum of wrong answers" src="/facegame/static/images/wrong.gif" class="wrongimg">
 					<span id="wrongnum">0</span>
-				<img alt="row" title="number of correct answers<br>in a row (and highest streak)" src="/static/images/row.png" class="rowimg">
+				<img alt="row" title="number of correct answers in a row (and highest record)" src="/facegame/static/images/row.png" class="rowimg">
 					<span id="rownum">0, 0</span>
-				<img alt="skip" title="skip and number of skips done<br>(use if no photo)" src="/static/images/skip.png" class="skipimg">
+				<img alt="skip" title="skip and number of skips done (use if no photo)" src="/facegame/static/images/skip.png" class="skipimg">
 					<span id="skipnum">0</span>
-				<img alt="mute" title="mute/unmute" src="/static/images/muteon.png" class="muteimg">
-				<img alt="help" title="toggle help" src="/static/images/help.png" class="helpimg">
+				<img alt="mute" title="mute/unmute sound effects" src="/facegame/static/images/muteon.png" class="muteimg">
+				<!--<img alt="help" title="toggle help" src="/facegame/static/images/help.png" class="helpimg">-->
 			</div>
 		</td>
 	</tr>

@@ -17,44 +17,51 @@ jQuery.preloadImages = function()
 
 $(document).ready(function()
 {
-	$.preloadImages("/static/images/loader.gif", "/static/images/muteon.png");
+	$.preloadImages("/facegame/static/images/loader.gif", "/facegame/static/images/muteon.png");
 
 	soundHandle1 = document.getElementById('soundHandle1');
 	soundHandle2 = document.getElementById('soundHandle2');
 	$("#soundHandle1").attr('preload', 'auto');
 	$("#soundHandle2").attr('preload', 'auto');
-	soundHandle1.src = '/static/sounds/correct.ogg';
+	soundHandle1.src = '/facegame/static/sounds/correct.ogg';
 	$(soundHandle1).bind("ended", function()
 	{
 		$('#nameform').submit();
 	});
-	soundHandle2.src = '/static/sounds/wrong.ogg';
+	soundHandle2.src = '/facegame/static/sounds/wrong.ogg';
 
 	$('.muteimg').bind("click", function(event)
 	{
 		if (mute == true)
 		{
 			mute = false;
-			$('.muteimg').attr('src', '/static/images/muteoff.png');
+			$('.muteimg').attr('src', '/facegame/static/images/muteoff.png');
 		} else
 		{
 			mute = true;
-			$('.muteimg').attr('src', '/static/images/muteon.png');
+			$('.muteimg').attr('src', '/facegame/static/images/muteon.png');
 		}
 	});
 
-	$('.helpimg').bind("click", function(event)
+	/*$('.helpimg').bind("click", function(event)
 	{
 		toggleTooltips();
-	});
+	});*/
 
-	$('.correctimg').tipsy({trigger: 'manual', html: true, gravity: 'se'});
+	/*$('.correctimg').tipsy({trigger: 'manual', html: true, gravity: 'se'});
 	$('.wrongimg').tipsy({trigger: 'manual', html: true, gravity: 'sw'});
 	$('.rowimg').tipsy({trigger: 'manual', html: true, gravity: 'ne'});
 	$('.skipimg').tipsy({trigger: 'manual', html: true, gravity: 'nw'});
 	$('.muteimg').tipsy({trigger: 'manual', html: true, gravity: 's'});
 	$('.helpimg').tipsy({trigger: 'manual', html: true, gravity: 'w'});
-	$('.logoimg').tipsy({trigger: 'manual', html: true, gravity: 'e'});
+	$('.logoimg').tipsy({trigger: 'manual', html: true, gravity: 'e'});*/
+
+	$('.correctimg').tipsy();
+	$('.wrongimg').tipsy();
+	$('.rowimg').tipsy();
+	$('.skipimg').tipsy();
+	$('.muteimg').tipsy();
+	$('.logoimg').tipsy();
 
 	initialize();
 });
@@ -134,7 +141,7 @@ function initialize()
 		$('#nameform').fadeOut(600);
 		$('#face').fadeOut(600, function()
 		{
-			$(this).attr('src', '/static/images/loader.gif');
+			$(this).attr('src', '/facegame/static/images/loader.gif');
 			$(this).fadeIn(400);
 		});
 		$('#nameform').submit();
@@ -168,7 +175,7 @@ function initialize()
 			$('#nameform').fadeOut(600);
 			$('#face').fadeOut(600, function()
 			{
-				$(this).attr('src', '/static/images/loader.gif');
+				$(this).attr('src', '/facegame/static/images/loader.gif');
 				$(this).fadeIn(400);
 			});
 			$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function()

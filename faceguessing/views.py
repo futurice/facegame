@@ -12,6 +12,7 @@ class NameForm(forms.Form):
 def index(request):
 	names = request.session.setdefault('names', filternames())
 	if request.method == 'POST':
+		session = dict(request.session)
 		random_users, correct_user = request.session['namesession']
 		form = NameForm(request.POST, initial={'name': random_users})
 		if 'choices' not in request.session:
@@ -52,6 +53,7 @@ def index(request):
 
 def filternames():
 	names = [user['uid'] for user in read_list('user')]
+	group = read('group', 'Futurice')['uniqueMember']
 	filterednames = []
 	for name in names:
 		if len(name) < 5:

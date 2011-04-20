@@ -6,9 +6,11 @@ FUMAPI_CONNECTION = {
     'USER': 'apitest',
     'PASSWORD': 'NooBoo6879,.-',
     'SERVERS': ['https://fum3.futurice.com/api/',],
-    'FUMAPI_ROOT': '/',
+    'FUMAPI_ROOT': '/facegame/',
 }
 FUMAPI_LOGFILE = 'access.log'
+
+FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 # ----
 
 STATIC_ROOT = os.path.abspath("media")
@@ -18,7 +20,7 @@ DEBUG = False
 TEMPLATE_DEBUG = True
 
 ADMINS = (
-    ('admin', 'admin@change.this'),
+#    ('admin', 'admin@futurice.com'),
 )
 
 MANAGERS = ADMINS
@@ -41,7 +43,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Helsinki'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -110,12 +112,14 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'fumapi',
-    'indexer',
-    'paging',
-    'sentry',
     'sentry.client',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
+SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
+SESSION_COOKIE_AGE = 1209600
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
