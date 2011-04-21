@@ -6,7 +6,8 @@ FUMAPI_CONNECTION = {
     'USER': 'apitest',
     'PASSWORD': 'NooBoo6879,.-',
     'SERVERS': ['https://fum3.futurice.com/api/',],
-    'FUMAPI_ROOT': '/facegame/',
+    'FUMAPI_ROOT': '/',
+#   'FUMAPI_ROOT': '/facegame/',
 }
 FUMAPI_LOGFILE = 'access.log'
 
@@ -123,3 +124,9 @@ SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
 SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 SESSION_COOKIE_AGE = 1209600
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+#FUM ---- Settings override for developpment
+try :
+	from env_settings import *
+except ImportError as e:
+	print "WARNING : settings for the development environment couldn't be imported because:", e
