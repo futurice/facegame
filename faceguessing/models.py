@@ -46,11 +46,11 @@ class PickledObjectField(models.Field):
 			raise TypeError('Lookup type %s is not supported.' % lookup_type)
 
 class Player(models.Model):
-	playerid = models.CharField(max_length=75)
+	playerid = models.CharField(max_length=5)
 
-	usednames = models.TextField()
-	currentRandomUsers = models.CharField(max_length=75)
-	currentCorrectUser = models.CharField(max_length=75)
+	usednames = PickledObjectField()
+	currentRandomUsers = PickledObjectField()
+	currentCorrectUser = models.CharField(max_length=5)
 
 	stats = PickledObjectField()
 	def __unicode__(self):

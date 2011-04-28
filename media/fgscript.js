@@ -1,11 +1,10 @@
-var correctAnswers = 0;
+/*var correctAnswers = 0;
 var wrongAnswers = 0;
 var currentStreak = 0;
 var highestStreak = 0;
-var skips = 0;
+var skips = 0;*/
 var skippable = true;
 var mute = true;
-var tooltips = false;
 
 jQuery.preloadImages = function()
 {
@@ -24,10 +23,10 @@ $(document).ready(function()
 	$("#soundHandle1").attr('preload', 'auto');
 	$("#soundHandle2").attr('preload', 'auto');
 	soundHandle1.src = '/facegame/static/sounds/correct.ogg';
-	$(soundHandle1).bind("ended", function()
+	/*$(soundHandle1).bind("ended", function()
 	{
 		$('#nameform').submit();
-	});
+	});*/
 	soundHandle2.src = '/facegame/static/sounds/wrong.ogg';
 
 	$('.muteimg').bind("click", function(event)
@@ -77,7 +76,7 @@ function response(responseText)
 	});
 }
 
-function toggleTooltips()
+/*function toggleTooltips()
 {
 	if (tooltips == false)
 	{
@@ -102,7 +101,7 @@ function toggleTooltips()
 		tooltips = false;
 		return false;
 	}
-}
+}*/
 
 function initialize()
 {
@@ -133,24 +132,101 @@ function initialize()
 
 	$('.skipimg').click(function(event)
 	{
-		$(this).fadeTo(500, 0.3).unbind('click');
-		$("li").unbind('click');
-		skips += 1;
-		$('#skipnum').html(skips);
-		$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
-		$('#nameform').fadeOut(600);
-		$('#face').fadeOut(600, function()
+		var answer = "SKIPSKIP";
+		$.post('/updatestats/', {'answer': answer}, function(data)
 		{
-			$(this).attr('src', '/facegame/static/images/loader.gif');
-			$(this).fadeIn(400);
+			$('#skipnum').html(data.skips);
+			$('.skipimg').fadeTo(500, 0.3).unbind('click');
+			$('li').unbind('click');
+			$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
+			$('#nameform').fadeOut(600);
+			$('#face').fadeOut(600, function()
+			{
+				$(this).attr('src', '/facegame/static/images/loader.gif');
+				$(this).fadeIn(400);
+			});
+			$.get('/jsonform/', function(form)
+			{
+				$('#face').fadeOut(400);
+				$('#output').css("display", "none");
+				$('#output').html(form.jsonform);
+				rnCheck();
+				initialize();
+			});
+			return false;
 		});
-		$('#nameform').submit();
-		return false;
 	});
 
 	$('li').click(function(event)
 	{
-		if ($(this).find("input[type=radio]").val() == rnCorrect)
+		$(this).unbind('click');
+		var answer = $(this).find("input[type=radio]").val();
+		$.post('/updatestats/', {'answer': answer}, function(data)
+		{
+			$('#correctnum').html(data.correctAnswers);
+			$('#wrongnum').html(data.wrongAnswers);
+			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
+			if (data.valid == true)
+			{
+				if (mute == false)
+				{
+					soundHandle1.load();
+					soundHandle1.play();
+				}
+				$("li").unbind('click');
+				$(".skipimg").fadeTo(500, 0.3).unbind('click');
+				if (skippable == true)
+				{
+					skippable = false;
+				}
+				$(this).find("input[type=radio]").attr("checked", "checked");
+				$('#nameform').fadeOut(600);
+				$('#face').fadeOut(600, function()
+				{
+					$(this).attr('src', '/facegame/static/images/loader.gif');
+					$(this).fadeIn(400);
+				});
+				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function()
+				{
+					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
+				});
+				/*if (mute == true)
+				{
+					$('#nameform').submit();
+				}*/
+				$.get('/jsonform/', function(form)
+				{
+					$('#face').fadeOut(400);
+					$('#output').css("display", "none");
+					$('#output').html(form.jsonform);
+					rnCheck();
+					initialize();
+				});
+				return false;
+			} else
+			{
+				if (mute == false)
+				{
+					soundHandle2.load();
+					soundHandle2.play();
+				}
+				$(".skipimg").fadeTo(500, 0.3).unbind('click');
+				if (skippable == true)
+				{
+					skippable = false;
+				}
+				$("li").find("input[value="+answer+"]").parent().fadeTo(700, 0.35);
+				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function()
+				{
+					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
+				});
+				return false;
+			}
+		});
+		return false;
+		
+
+		/*if ($(this).find("input[type=radio]").val() == rnCorrect)
 		{
 			if (mute == false)
 			{
@@ -190,6 +266,9 @@ function initialize()
 		}
 		else
 		{
+			$.post('/update/', {'test': 'test'}, function(data){
+				alert(data.valid);
+			});
 			if (mute == false)
 			{
 				soundHandle2.load();
@@ -211,9 +290,9 @@ function initialize()
 				$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
 			});
 			return false;
-		}
+		}*/
 	});
 
-	var options = {target: '#output', success: response};
-	$('#nameform').ajaxForm(options);
+	/*var options = {target: '#output', success: response};
+	$('#nameform').ajaxForm(options);*/
 }

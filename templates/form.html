@@ -1,11 +1,9 @@
 <script type="text/javascript">
 	function rnCheck()
-	{	rnCorrect = "{{ rncorrect }}";
+	{
 		skippable = true;
 		$('#nameform').fadeIn(700);
 		$('#face').fadeIn(700);
-		$('#correctnum').html(correctAnswers);
-		$('#wrongnum').html(wrongAnswers);
 	}	
 </script>
 
@@ -25,7 +23,7 @@
 			</form>
 			</td>
 		<td align="left">
-			<img alt="current face" id="face" src="{% url fumapi:user_photo rncorrect %}">
+			<img alt="current face" id="face" src="{% url fumapi:user_photo player.currentCorrectUser %}">
 		</td>
 	</tr>
 </table>

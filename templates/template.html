@@ -7,7 +7,12 @@
 	<link rel="stylesheet" href="/facegame/static/tipsy.css" type="text/css" />
 
 	<script type="text/javascript">
-		var rnCorrect = "{{ rncorrect }}";
+		var rnCorrect = "{{ player.currentCorrectUser }}";
+		var correctAnswers = {{ player.stats.correctAnswers }};
+		var wrongAnswers = {{ player.stats.wrongAnswers }};
+		var currentStreak = {{ player.stats.currentStreak }};
+		var highestStreak = {{ player.stats.highestStreak }};
+		var skips = {{ player.stats.skips }};
 	</script>
 	
 	<script src="/facegame/static/fgscript.js"></script>
@@ -29,15 +34,14 @@
 			</p>
 			<div id="scoretxt" class="scoretxt">
 				<img alt="correct" title="sum of correct answers" src="/facegame/static/images/correct.gif" class="correctimg">
-					<span id="correctnum">0</span>
+					<span id="correctnum">{{ player.stats.correctAnswers }}</span>
 				<img alt="wrong" title="sum of wrong answers" src="/facegame/static/images/wrong.gif" class="wrongimg">
-					<span id="wrongnum">0</span>
+					<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
 				<img alt="row" title="number of correct answers in a row (and highest record)" src="/facegame/static/images/row.png" class="rowimg">
-					<span id="rownum">0, 0</span>
+					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
 				<img alt="skip" title="skip and number of skips done (use if no photo)" src="/facegame/static/images/skip.png" class="skipimg">
-					<span id="skipnum">0</span>
+					<span id="skipnum">{{ player.stats.skips }}</span>
 				<img alt="mute" title="mute/unmute sound effects" src="/facegame/static/images/muteon.png" class="muteimg">
-				<!--<img alt="help" title="toggle help" src="/facegame/static/images/help.png" class="helpimg">-->
 			</div>
 		</td>
 	</tr>
@@ -53,7 +57,7 @@
 			</form>
 			</td>
 		<td align="left">
-			<img id="face" src="{% url fumapi:user_photo rncorrect %}">
+			<img id="face" src="{% url fumapi:user_photo player.currentCorrectUser %}">
 		</td>
 	</tr>
 </table>

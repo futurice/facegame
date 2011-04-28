@@ -3,8 +3,8 @@ import os
 
 # ---- FUM API settings
 FUMAPI_CONNECTION = {
-    'USER': 'apitest',
-    'PASSWORD': 'NooBoo6879,.-',
+    'USER': 'facegame',
+    'PASSWORD': 'G4HJ1vLdhA',
     'SERVERS': ['https://fum3.futurice.com/api/',],
     'FUMAPI_ROOT': '/',
 #   'FUMAPI_ROOT': '/facegame/',
@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'faceguessing',
     'fumapi',
     'sentry.client',
     # Uncomment the next line to enable the admin:
