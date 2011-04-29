@@ -157,6 +157,19 @@ function initialize()
 		});
 	});
 
+	$('.resetimg').click(function(event)
+	{
+		var answer = "RESET";
+		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
+		{
+			$('#correctnum').html(data.correctAnswers);
+			$('#wrongnum').html(data.wrongAnswers);
+			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
+			$('#skipnum').html(data.skips);
+			return false;
+		});
+	});
+
 	$('li').click(function(event)
 	{
 		$(this).unbind('click');

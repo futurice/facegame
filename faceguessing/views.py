@@ -36,6 +36,9 @@ def updatestats(request):
 	elif request.POST['answer'] == "SKIPSKIP":
 		player.stats['skips'] += 1
 		valid = True
+	elif request.POST['answer'] == "RESET":
+		player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
+		valid = False
 	else:
 		player.stats['wrongAnswers'] += 1
 		player.stats['currentStreak'] = 0
@@ -90,7 +93,7 @@ def createFormChoices(request, player, form):
 	request.session['choices'] = formchoices
 	print "form choices created"
 
-def random_user(used_names, names):
+def random_user(used_names, names, player):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
