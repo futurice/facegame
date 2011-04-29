@@ -93,7 +93,7 @@ def createFormChoices(request, player, form):
 	request.session['choices'] = formchoices
 	print "form choices created"
 
-def random_user(used_names, names, player):
+def random_user(used_names, names):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)

@@ -61,6 +61,7 @@ $(document).ready(function()
 	$('.skipimg').tipsy();
 	$('.muteimg').tipsy();
 	$('.logoimg').tipsy();
+	$('.resetimg').tipsy();
 
 	initialize();
 });
@@ -102,6 +103,25 @@ function response(responseText)
 		return false;
 	}
 }*/
+
+function deteleconfirm()
+{
+	var confirmanswer = confirm("You are about to reset your stats. Are you sure?")
+	if (confirmanswer)
+	{
+		var answer = "RESET";
+		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
+		{
+			$('#correctnum').html(data.correctAnswers);
+			$('#wrongnum').html(data.wrongAnswers);
+			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
+			$('#skipnum').html(data.skips);
+			return false;
+		});
+		return false;
+	}
+	return false;
+}
 
 function initialize()
 {
@@ -153,19 +173,6 @@ function initialize()
 				rnCheck();
 				initialize();
 			});
-			return false;
-		});
-	});
-
-	$('.resetimg').click(function(event)
-	{
-		var answer = "RESET";
-		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
-		{
-			$('#correctnum').html(data.correctAnswers);
-			$('#wrongnum').html(data.wrongAnswers);
-			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
-			$('#skipnum').html(data.skips);
 			return false;
 		});
 	});

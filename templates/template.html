@@ -41,9 +41,8 @@
 					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
 				<img alt="skip" title="skip and number of skips done (use if no photo)" src="/facegame/static/images/skip.png" class="skipimg">
 					<span id="skipnum">{{ player.stats.skips }}</span>
-					<span> | </span>
 				<img alt="mute" title="mute/unmute sound effects" src="/facegame/static/images/muteon.png" class="muteimg">
-				<img alt="reset" title="this will reset your stats" src="/facegame/static/images/reset.png" class="resetimg" onClick="return confirm('You are about to reset all your stats\nAre you sure?')">
+				<img alt="reset" title="this will reset your stats" src="/facegame/static/images/reset.png" class="resetimg" onClick="return deteleconfirm();">
 			</div>
 		</td>
 	</tr>
