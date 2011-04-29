@@ -6,8 +6,7 @@ FUMAPI_CONNECTION = {
     'USER': 'facegame',
     'PASSWORD': 'G4HJ1vLdhA',
     'SERVERS': ['https://fum3.futurice.com/api/',],
-    'FUMAPI_ROOT': '/',
-#   'FUMAPI_ROOT': '/facegame/',
+    'FUMAPI_ROOT': '/facegame/',
 }
 FUMAPI_LOGFILE = 'access.log'
 
@@ -17,7 +16,7 @@ FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -114,7 +113,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'faceguessing',
     'fumapi',
-    'sentry.client',
+#    'sentry.client',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -123,11 +122,11 @@ INSTALLED_APPS = (
 
 SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
 SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
-SESSION_COOKIE_AGE = 1209600
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+#SESSION_COOKIE_AGE = 1209600
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 #FUM ---- Settings override for developpment
-try :
-	from env_settings import *
-except ImportError as e:
-	print "WARNING : settings for the development environment couldn't be imported because:", e
+#try :
+#	from env_settings import *
+#except ImportError as e:
+#	print "WARNING : settings for the development environment couldn't be imported because:", e
