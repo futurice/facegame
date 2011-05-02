@@ -5,3 +5,4 @@ syntax: glob
 *.sock
 facegamedb
 env_settings.py
+media/futupic/

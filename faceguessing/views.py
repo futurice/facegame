@@ -4,11 +4,13 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.conf import settings
 from fumapi import read, read_list
 from django import forms
 from models import Player
 import random
 import json
+import hashlib
 
 class NameForm(forms.Form):
 	name = forms.ChoiceField(widget = forms.RadioSelect)
@@ -100,8 +102,12 @@ def random_user(used_names, names):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
-
 	rncorrect = not_used[random.randrange(0, len(not_used))]
+	rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
+	while rncorrect_hash == settings.ANONYMOUS_PIC:
+		rncorrect = not_used[random.randrange(0, len(not_used))]
+		rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
+
 	random_names = [rncorrect]
 	for ind in range(0, 4):
 		rn = names[random.randrange(0, len(names))]

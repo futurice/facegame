@@ -16,7 +16,9 @@ FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-DEBUG = False
+ANONYMOUS_PIC = '8217e8eb91f64d27b4cf7751861e62ce'
+
+DEBUG = True
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -76,13 +78,13 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ')&$k692@_8z5d$3py^^9nddc5ln$3j0(8z%w98%23v=kuec25!'
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-	'django.contrib.auth.context_processors.auth',
-	'django.core.context_processors.debug',
-	'django.core.context_processors.i18n',
-	'django.core.context_processors.media',
-	'django.contrib.messages.context_processors.messages',
-)
+#TEMPLATE_CONTEXT_PROCESSORS = (
+#	'django.contrib.auth.context_processors.auth',
+#	'django.core.context_processors.debug',
+#	'django.core.context_processors.i18n',
+#	'django.core.context_processors.media',
+#	'django.contrib.messages.context_processors.messages',
+#)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -114,12 +116,10 @@ INSTALLED_APPS = (
     'faceguessing',
     'fumapi',
     'sentry.client',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
 )
 
+SENTRY_TESTING = True
 SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
 SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 #SESSION_COOKIE_AGE = 1209600
