@@ -76,9 +76,12 @@ def getAllNames():
 def createForm(request, player, names):
 	print "creating a form"
 	form = NameForm()
-	player.currentRandomUsers, player.currentCorrectUser, not_usedp = random_user(player.usednames, names)
-	if not_usedp < 10:
+	unp = Paginator(player.usednames, 1)
+	unc = unp.count
+	if unc > 120:
 		player.usednames = []
+		player.save()
+	player.currentRandomUsers, player.currentCorrectUser = random_user(player.usednames, names)
 	player.usednames += [player.currentCorrectUser]
 	player.save()
 	createFormChoices(request, player, form)
@@ -97,7 +100,6 @@ def random_user(used_names, names):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
-	not_usedp = Paginator(not_used, 1)
 
 	rncorrect = not_used[random.randrange(0, len(not_used))]
 	random_names = [rncorrect]
@@ -107,4 +109,4 @@ def random_user(used_names, names):
 			rn = names[random.randrange(0, len(names))]
 		random_names.append(rn)
 	random.shuffle(random_names)
-	return random_names, rncorrect, not_usedp
+	return random_names, rncorrect

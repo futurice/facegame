@@ -16,7 +16,7 @@ FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -113,7 +113,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'faceguessing',
     'fumapi',
-#    'sentry.client',
+    'sentry.client',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
