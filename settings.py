@@ -1,5 +1,6 @@
 # Django settings for facegame project.
 import os
+import hashlib
 
 # ---- FUM API settings
 FUMAPI_CONNECTION = {
@@ -16,7 +17,7 @@ FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-ANONYMOUS_PIC = '8217e8eb91f64d27b4cf7751861e62ce'
+ANONYMOUS_PIC = hashlib.md5(open("/home/facegame/facegame/media/images/anonymous.png").read()).hexdigest()
 
 DEBUG = True
 TEMPLATE_DEBUG = True

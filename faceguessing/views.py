@@ -11,6 +11,7 @@ from models import Player
 import random
 import json
 import hashlib
+import os
 
 class NameForm(forms.Form):
 	name = forms.ChoiceField(widget = forms.RadioSelect)
@@ -103,6 +104,8 @@ def random_user(used_names, names):
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
 	rncorrect = not_used[random.randrange(0, len(not_used))]
+	while os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png") == False:
+		rncorrect = not_used[random.randrange(0, len(not_used))]
 	rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
 	while rncorrect_hash == settings.ANONYMOUS_PIC:
 		rncorrect = not_used[random.randrange(0, len(not_used))]
