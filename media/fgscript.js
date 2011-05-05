@@ -132,7 +132,7 @@ function deteleconfirm()
 	if (confirmanswer)
 	{
 		var answer = "RESET";
-		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
@@ -175,7 +175,7 @@ function initialize()
 	$('.skipimg').click(function(event)
 	{
 		var answer = "SKIPSKIP";
-		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
 		{
 			$('#skipnum').html(data.skips);
 			$('.skipimg').fadeTo(500, 0.3).unbind('click');
@@ -187,7 +187,7 @@ function initialize()
 				$(this).attr('src', '/facegame/static/images/loader.gif');
 				$(this).fadeIn(400);
 			});
-			$.get('/facegame/jsonform/', function(form)
+			$.get('/facegame/jsonform/?ajax=true&random='+Math.random(), function(form)
 			{
 				$('#face').fadeOut(400);
 				$('#output').css("display", "none");
@@ -203,7 +203,7 @@ function initialize()
 	{
 		$(this).unbind('click');
 		var answer = $(this).find("input[type=radio]").val();
-		$.post('/facegame/updatestats/', {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
@@ -236,7 +236,7 @@ function initialize()
 				{
 					$('#nameform').submit();
 				}*/
-				$.get('/facegame/jsonform/', function(form)
+				$.get('/facegame/jsonform/?ajax=true&random='+Math.random(), function(form)
 				{
 					$('#face').fadeOut(400);
 					$('#output').css("display", "none");
@@ -308,7 +308,7 @@ function initialize()
 		}
 		else
 		{
-			$.post('/update/', {'test': 'test'}, function(data){
+			$.post('/update/?ajax=true&random='+Math.random(), {'test': 'test'}, function(data){
 				alert(data.valid);
 			});
 			if (mute == false)
