@@ -17,7 +17,7 @@ FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
 STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
-ANONYMOUS_PIC = hashlib.md5(open("/home/facegame/facegame/media/images/anonymous.png").read()).hexdigest()
+ANONYMOUS_PIC = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymous.png").read()).hexdigest()
 
 DEBUG = True
 TEMPLATE_DEBUG = True
@@ -114,7 +114,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'facegame.urls'
 
 TEMPLATE_DIRS = (
-    "templates",
+    os.path.join(os.path.dirname(__file__), 'templates'),
 )
 
 INSTALLED_APPS = (
@@ -129,14 +129,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 )
 
+IMAGEDIR = "/var/www/intra.futurice.org/futupic"
+
 SENTRY_TESTING = True
 SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
 SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 #SESSION_COOKIE_AGE = 1209600
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-#FUM ---- Settings override for developpment
-#try :
-#	from env_settings import *
-#except ImportError as e:
-#	print "WARNING : settings for the development environment couldn't be imported because:", e
