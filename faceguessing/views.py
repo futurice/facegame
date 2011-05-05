@@ -17,12 +17,17 @@ import os
 class NameForm(forms.Form):
 	name = forms.ChoiceField(widget = forms.RadioSelect)
 
+
+def get_user_image(request):
+    player = Player.objects.get(playerid=request.META['REMOTE_USER'])
+    return HttpResponse(open("/var/www/intra.futurice.org/futupic/" + player.currentCorrectUser + ".png").read(),content_type="image/png")
+
 def jsonform(request):
 	print "creating a json form"
 	player = Player.objects.get(playerid=request.META['REMOTE_USER'])
 	names = getAllNames()
 	form = createForm(request, player, names)
-	jsonform = render_to_string('form.html', {'form': form, 'player': player}, context_instance=RequestContext(request, {}))
+	jsonform = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1,10000000)}, context_instance=RequestContext(request, {}))
 	print "json form rendered"
 	return HttpResponse(json.dumps({'jsonform': jsonform}), content_type='application/json')
 
@@ -69,14 +74,14 @@ def index(request):
 		print player.playerid
 	names = request.session.setdefault('names', getAllNames())
 	form = createForm(request, player, names)
-	return render_to_response('template.html', {'form': form, 'player': player}, context_instance=RequestContext(request, {}))
+	return render_to_response('template.html', {'form': form, 'player': player, 'random': random.randint(1,10000000)}, context_instance=RequestContext(request, {}))
 
 def getAllNames():
 	print "getting all names"
         names = cache.get("all-futurice-names")
         if names is None:
    	     names = [user['rdn_value'] for user in read('group', 'Futurice')['uniqueMember']]
-             cache.set("all-futurice-names", names, 1800)
+             cache.set("all-futurice-names", names, 3600)
 	return names
 
 def createForm(request, player, names):
@@ -99,7 +104,7 @@ def __read_fum_user(user):
     user_details = cache.get("fum3-user-%s" % user)
     if user_details is None:
         user_details = read('user', user)
-        cache.set("fum3-user-%s" % user, user_details, 1800)
+        cache.set("fum3-user-%s" % user, user_details, 3600)
     return user_details
 
 def createFormChoices(request, player, form):
