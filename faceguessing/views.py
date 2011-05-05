@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
@@ -19,9 +20,7 @@ class NameForm(forms.Form):
 def jsonform(request):
 	print "creating a json form"
 	player = Player.objects.get(playerid=request.META['REMOTE_USER'])
-	if 'names' not in request.session:
-		request.session['names'] = getAllNames()
-	names = request.session['names']
+	names = getAllNames()
 	form = createForm(request, player, names)
 	jsonform = render_to_string('form.html', {'form': form, 'player': player}, context_instance=RequestContext(request, {}))
 	print "json form rendered"
@@ -33,6 +32,7 @@ def updatestats(request):
 	if request.POST['answer'] == player.currentCorrectUser:
 		player.stats['correctAnswers'] += 1
 		player.stats['currentStreak'] += 1
+         	player.usednames += [player.currentCorrectUser]
 		if player.stats['highestStreak'] < player.stats['currentStreak']:
 			player.stats['highestStreak'] += 1
 		valid = True
@@ -53,7 +53,7 @@ def updatestats(request):
 	highestStreak = player.stats['highestStreak']
 	player.save()
 	print "stats updated"
-	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak}), content_type='application/json')
+	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
 	player, create = Player.objects.get_or_create(playerid=request.META['REMOTE_USER'])
@@ -73,7 +73,10 @@ def index(request):
 
 def getAllNames():
 	print "getting all names"
-	names =  [user['rdn_value'] for user in read('group', 'Futurice')['uniqueMember']]
+        names = cache.get("all-futurice-names")
+        if names is None:
+   	     names = [user['rdn_value'] for user in read('group', 'Futurice')['uniqueMember']]
+             cache.set("all-futurice-names", names, 1800)
 	return names
 
 def createForm(request, player, names):
@@ -81,19 +84,27 @@ def createForm(request, player, names):
 	form = NameForm()
 	unp = Paginator(player.usednames, 1)
 	unc = unp.count
-	if unc > 120:
+	if unc > 50:
 		player.usednames = []
 		player.save()
-	player.currentRandomUsers, player.currentCorrectUser = random_user(player.usednames, names)
-	player.usednames += [player.currentCorrectUser]
+        randomusers, currentcorrect = random_user(player.usednames, names)
+	player.currentRandomUsers = randomusers
+        player.currentCorrectUser = currentcorrect
 	player.save()
 	createFormChoices(request, player, form)
 	print "form created"
 	return form
 
+def __read_fum_user(user):
+    user_details = cache.get("fum3-user-%s" % user)
+    if user_details is None:
+        user_details = read('user', user)
+        cache.set("fum3-user-%s" % user, user_details, 1800)
+    return user_details
+
 def createFormChoices(request, player, form):
 	print "creating form choices"
-	user_dicts = [read('user', user) for user in player.currentRandomUsers]
+	user_dicts = [__read_fum_user(user) for user in player.currentRandomUsers]
 	formchoices = [(user['uid'], user['cn']) for user in user_dicts]
 	form.fields['name'].choices = formchoices
 	request.session['choices'] = formchoices
@@ -103,13 +114,16 @@ def random_user(used_names, names):
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
-	rncorrect = not_used[random.randrange(0, len(not_used))]
+	rncorrect = random.choice(not_used)
+#not_used[random.randrange(0, len(not_used))]
 	while os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png") == False:
-		rncorrect = not_used[random.randrange(0, len(not_used))]
+   		rncorrect = random.choice(not_used)
 	rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
-	while rncorrect_hash == settings.ANONYMOUS_PIC:
-		rncorrect = not_used[random.randrange(0, len(not_used))]
+        missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
+	while rncorrect_hash == settings.ANONYMOUS_PIC or missing is False:
+   		rncorrect = random.choice(not_used)
 		rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
+                missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
 
 	random_names = [rncorrect]
 	for ind in range(0, 4):
