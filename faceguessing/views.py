@@ -9,6 +9,7 @@ from django.conf import settings
 from fumapi import read, read_list
 from django import forms
 from models import Player
+from facegame.namegen.gen import get_random_name
 import random
 import json
 import hashlib
@@ -104,13 +105,16 @@ def __read_fum_user(user):
     user_details = cache.get("fum3-user-%s" % user)
     if user_details is None:
         user_details = read('user', user)
-        cache.set("fum3-user-%s" % user, user_details, 3600)
+        cache.set("fum3-user-%s" % user, user_details, 10000)
     return user_details
 
 def createFormChoices(request, player, form):
 	print "creating form choices"
 	user_dicts = [__read_fum_user(user) for user in player.currentRandomUsers]
 	formchoices = [(user['uid'], user['cn']) for user in user_dicts]
+        while len(formchoices) < 5:
+            formchoices.append(get_random_name())
+        random.shuffle(formchoices)
 	form.fields['name'].choices = formchoices
 	request.session['choices'] = formchoices
 	print "form choices created"
@@ -121,7 +125,7 @@ def random_user(used_names, names):
 	not_used = list(names_set - used_names_set)
 	rncorrect = random.choice(not_used)
 #not_used[random.randrange(0, len(not_used))]
-	while os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png") == False:
+	while os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png") is False:
    		rncorrect = random.choice(not_used)
 	rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
         missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
@@ -131,7 +135,7 @@ def random_user(used_names, names):
                 missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
 
 	random_names = [rncorrect]
-	for ind in range(0, 4):
+	for ind in range(0, random.randint(2,4)):
 		rn = names[random.randrange(0, len(names))]
 		while rn in random_names:
 			rn = names[random.randrange(0, len(names))]
