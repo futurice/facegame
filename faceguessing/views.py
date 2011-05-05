@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from fumapi import read, read_list
 from django import forms
-from models import Player
+from models import Player, UserStats
 from facegame.namegen.gen import get_random_name
 import random
 import json
@@ -35,7 +35,12 @@ def jsonform(request):
 def updatestats(request):
 	print "updating stats"
 	player = Player.objects.get(playerid=request.META['REMOTE_USER'])
+        userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
 	if request.POST['answer'] == player.currentCorrectUser:
+                userstats.success += 1
+                if player.first_attempt:
+                     player.first_attempt = True
+                     userstats.first_success += 1
 		player.stats['correctAnswers'] += 1
 		player.stats['currentStreak'] += 1
          	player.usednames += [player.currentCorrectUser]
@@ -44,6 +49,7 @@ def updatestats(request):
 		valid = True
 	elif request.POST['answer'] == "SKIPSKIP":
 		player.stats['skips'] += 1
+                userstats.skipped += 1
 		valid = True
 	elif request.POST['answer'] == "RESET":
 		player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
@@ -51,6 +57,10 @@ def updatestats(request):
 	else:
 		player.stats['wrongAnswers'] += 1
 		player.stats['currentStreak'] = 0
+                userstats.failed_attempts += 1
+                if player.first_attempt:
+                     player.first_attempt = False
+                     userstats.failed += 1
 		valid = False
 	correctAnswers = player.stats['correctAnswers']
 	wrongAnswers = player.stats['wrongAnswers']
@@ -58,6 +68,7 @@ def updatestats(request):
 	currentStreak = player.stats['currentStreak']
 	highestStreak = player.stats['highestStreak']
 	player.save()
+        userstats.save()
 	print "stats updated"
 	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
@@ -96,6 +107,7 @@ def createForm(request, player, names):
         randomusers, currentcorrect = random_user(player.usednames, names)
 	player.currentRandomUsers = randomusers
         player.currentCorrectUser = currentcorrect
+        player.first_attempt = True
 	player.save()
 	createFormChoices(request, player, form)
 	print "form created"
