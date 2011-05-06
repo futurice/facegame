@@ -1,11 +1,6 @@
-<html>
-<head>
-	<script src="/facegame/static/jquery.min.js"></script>
-	<script src="/facegame/static/jquery.form.js"></script>
+{% extends "base.html" %}
 
-	<script type='text/javascript' src='/facegame/static/jquery.tipsy.js'></script>
-	<link rel="stylesheet" href="/facegame/static/tipsy.css" type="text/css" />
-
+{% block header %}
 	<script type="text/javascript">
 		var rnCorrect = "{{ player.currentCorrectUser }}";
 		var correctAnswers = {{ player.stats.correctAnswers }};
@@ -16,11 +11,14 @@
 	</script>
 	
 	<script src="/facegame/static/fgscript.js"></script>
-	<link rel="stylesheet" href="/facegame/static/fgstyle.css" type="text/css" />
+{% endblock %}
 	
 	<title>Futufaces</title>
 </head>
 <body>
+
+{% block body %}
+
 <audio id="soundHandle1" style="display: none;"></audio>
 <audio id="soundHandle2" style="display: none;"></audio>
 <table cellspacing="8px" align="center">
@@ -63,5 +61,4 @@
 	</tr>
 </table>
 </div>
-</body>
-</html>
+{% endblock %}
