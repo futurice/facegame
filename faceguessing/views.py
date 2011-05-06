@@ -20,12 +20,12 @@ class NameForm(forms.Form):
 
 
 def get_user_image(request):
-    player = Player.objects.get(playerid=request.META['REMOTE_USER'])
+    player = Player.objects.get(playerid=request.user.username)
     return HttpResponse(open("/var/www/intra.futurice.org/futupic/" + player.currentCorrectUser + ".png").read(),content_type="image/png")
 
 def jsonform(request):
 	print "creating a json form"
-	player = Player.objects.get(playerid=request.META['REMOTE_USER'])
+	player = Player.objects.get(playerid=request.user.username)
 	names = getAllNames()
 	form = createForm(request, player, names)
 	jsonform = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1,10000000)}, context_instance=RequestContext(request, {}))
@@ -34,7 +34,7 @@ def jsonform(request):
 
 def updatestats(request):
 	print "updating stats"
-	player = Player.objects.get(playerid=request.META['REMOTE_USER'])
+	player = Player.objects.get(playerid=request.user.username)
         userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
 	if request.POST['answer'] == player.currentCorrectUser:
                 userstats.success += 1
@@ -53,6 +53,7 @@ def updatestats(request):
 		valid = True
 	elif request.POST['answer'] == "RESET":
 		player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
+		player.usednames = [request.user.username]
 		valid = False
 	else:
 		player.stats['wrongAnswers'] += 1
@@ -73,12 +74,12 @@ def updatestats(request):
 	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
-	player, create = Player.objects.get_or_create(playerid=request.META['REMOTE_USER'])
+	player, create = Player.objects.get_or_create(playerid=request.user.username)
 	if create:
 		print "player created"
 		player.currentCorrectUser = ''
 		player.currentRandomUsers = []
-		player.usednames = []
+		player.usednames = [request.user.username]
 		player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
 		player.save()
 	else:
