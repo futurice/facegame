@@ -89,7 +89,7 @@ function deteleconfirm()
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
 			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
-			$('#skipnum').html(data.skips);
+			/*$('#skipnum').html(data.skips);*/
 			return false;
 		});
 		return false;
@@ -155,7 +155,7 @@ function initialize()
 	{
 		$(this).unbind('click');
 		var answer = $(this).find("input[type=radio]").val();
-		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
