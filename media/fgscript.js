@@ -84,7 +84,7 @@ function deteleconfirm()
 	if (confirmanswer)
 	{
 		var answer = "RESET";
-		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
@@ -127,7 +127,7 @@ function initialize()
 	/*$('.skipimg').click(function(event)
 	{
 		var answer = "SKIPSKIP";
-		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
+		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
 		{
 			$('#skipnum').html(data.skips);
 			$('.skipimg').fadeTo(500, 0.3).unbind('click');
