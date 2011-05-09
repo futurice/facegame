@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% for item in hall_of_fame %}
+<div style="float:left;padding:1em;">
+<img src="/futupic/thumbs/{{ item.user.uid }}.jpg"><br>
+{{ item.user.cn }}<br>
+Ok: {{ item.stats.success }} / fail: {{ item.stats.failed_attempts }}
+</div>
+{% endfor %}
+
+{% endblock %}
