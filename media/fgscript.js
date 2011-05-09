@@ -1,4 +1,4 @@
-var skippable = true;
+/*var skippable = true;*/
 var mute = true;
 
 jQuery.preloadImages = function()
@@ -59,7 +59,7 @@ $(document).ready(function()
 	$('.correctimg').tipsy();
 	$('.wrongimg').tipsy();
 	$('.rowimg').tipsy();
-	$('.skipimg').tipsy();
+	/*$('.skipimg').tipsy();*/
 	$('.muteimg').tipsy();
 	$('.logoimg').tipsy();
 	$('.resetimg').tipsy();
@@ -99,7 +99,7 @@ function deteleconfirm()
 
 function initialize()
 {
-	$('.skipimg').fadeTo(500, 1.0);
+	/*$('.skipimg').fadeTo(500, 1.0);*/
 	if( $.browser.opera ){
 		$('#output').fadeIn(700);
 		$('#nameform').attr("disabled", false);
@@ -124,7 +124,7 @@ function initialize()
 		$(this).css("background-color", "#FFFFFF");
 	});
 
-	$('.skipimg').click(function(event)
+	/*$('.skipimg').click(function(event)
 	{
 		var answer = "SKIPSKIP";
 		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {'answer': answer}, function(data)
@@ -149,7 +149,7 @@ function initialize()
 			});
 			return false;
 		});
-	});
+	});*/
 
 	$('li').click(function(event)
 	{
@@ -168,11 +168,11 @@ function initialize()
 					soundHandle1.play();
 				}
 				$("li").unbind('click');
-				$(".skipimg").fadeTo(500, 0.3).unbind('click');
+				/*$(".skipimg").fadeTo(500, 0.3).unbind('click');
 				if (skippable == true)
 				{
 					skippable = false;
-				}
+				}*/
 				$(this).find("input[type=radio]").attr("checked", "checked");
 				$('#nameform').fadeOut(600);
 				$('#face').fadeOut(600, function()
@@ -200,11 +200,11 @@ function initialize()
 					soundHandle2.load();
 					soundHandle2.play();
 				}
-				$(".skipimg").fadeTo(500, 0.3).unbind('click');
+				/*$(".skipimg").fadeTo(500, 0.3).unbind('click');
 				if (skippable == true)
 				{
 					skippable = false;
-				}
+				}*/
 				$("li").find("input[value="+answer+"]").parent().fadeTo(700, 0.35);
 				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function()
 				{
