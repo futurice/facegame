@@ -19,7 +19,7 @@ STATIC_URL = '/static/'
 
 ANONYMOUS_PIC = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymous.png").read()).hexdigest()
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = True
 
 ADMINS = (

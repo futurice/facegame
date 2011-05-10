@@ -25,8 +25,9 @@ def get_user_image(request):
 
 def jsonform(request):
 	print "creating a json form"
-	player = Player.objects.get(playerid=request.user.username)
-	names = getAllNames()
+	connected_user = request.user.username
+	player = Player.objects.get(playerid=connected_user)
+	names = getAllNames(connected_user)
 	form = createForm(request, player, names)
 	jsonform = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1,10000000)}, context_instance=RequestContext(request, {}))
 	print "json form rendered"
@@ -74,7 +75,8 @@ def updatestats(request):
 	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
-	player, create = Player.objects.get_or_create(playerid=request.user.username)
+	connected_user = request.user.username
+	player, create = Player.objects.get_or_create(playerid=connected_user)
 	if create:
 		print "player created"
 		player.currentCorrectUser = ''
@@ -85,15 +87,15 @@ def index(request):
 	else:
 		print "player not created"
 		print player.playerid
-	names = request.session.setdefault('names', getAllNames())
+	names = request.session.setdefault('names', getAllNames(connected_user))
 	form = createForm(request, player, names)
 	return render_to_response('template.html', {'form': form, 'player': player, 'random': random.randint(1,10000000)}, context_instance=RequestContext(request, {}))
 
-def getAllNames():
+def getAllNames(connected_user):
 	print "getting all names"
         names = cache.get("all-futurice-names")
         if names is None:
-   	     names = [user['rdn_value'] for user in read('group', 'Futurice')['uniqueMember']]
+   	     names = [user['rdn_value'] for user in read('group', 'Futurice', username = connected_user)['uniqueMember']]
              cache.set("all-futurice-names", names, 3600)
 	return names
 
@@ -114,16 +116,17 @@ def createForm(request, player, names):
 	print "form created"
 	return form
 
-def __read_fum_user(user):
+def __read_fum_user(user, connected_user):
     user_details = cache.get("fum3-user-%s" % user)
     if user_details is None:
-        user_details = read('user', user)
+        user_details = read('user', user, username = connected_user)
         cache.set("fum3-user-%s" % user, user_details, 10000)
     return user_details
 
 def createFormChoices(request, player, form):
 	print "creating form choices"
-	user_dicts = [__read_fum_user(user) for user in player.currentRandomUsers]
+	connected_user = request.user.username
+	user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
 	formchoices = [(user['uid'], user['cn']) for user in user_dicts]
         while len(formchoices) < 5:
             formchoices.append(get_random_name())
