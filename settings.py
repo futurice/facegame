@@ -7,7 +7,7 @@ FUMAPI_CONNECTION = {
     'USER': 'facegame',
     'PASSWORD': 'G4HJ1vLdhA',
     'SERVERS': ['https://fum3.futurice.com/api/',],
-    'FUMAPI_ROOT': '/facegame/',
+    'FUMAPI_ROOT': '/',
 }
 FUMAPI_LOGFILE = 'access.log'
 
@@ -18,8 +18,10 @@ STATIC_ROOT = os.path.abspath("media")
 STATIC_URL = '/static/'
 
 ANONYMOUS_PIC = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymous.png").read()).hexdigest()
+ANONYMOUS_THUMB = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymousthumb.jpg").read()).hexdigest()
+PATH_TO_FUTUPIC = "/var/www/intra.futurice.org/futupic/"
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -94,12 +96,12 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'facegame',
-    }
-}
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+#        'LOCATION': 'facegame',
+#    }
+#}
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -107,7 +109,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.RemoteUserMiddleware',
+#    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
@@ -131,8 +133,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'faceguessing',
     'fumapi',
-    'south',
-    'sentry.client',
+#    'south',
+#    'sentry.client',
     'django.contrib.admin',
 )
 
@@ -144,3 +146,7 @@ SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 #SESSION_COOKIE_AGE = 1209600
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+try:
+	from env_settings import *
+except ImportError:
+	print "WARNING : no env_settings"

@@ -1,5 +1,7 @@
 /*var skippable = true;*/
 var mute = true;
+var switchtooltip = false;
+var gamemode = 'face';
 
 jQuery.preloadImages = function()
 {
@@ -56,6 +58,27 @@ $(document).ready(function()
 		}
 	});
 
+	/*$('.switchimg').bind("click", function(event)
+	{
+		var answer = "SWITCH";
+		$.post('/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
+		{
+			$(".switchimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function()
+				{
+					$(".switchimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
+				});
+			$.get('/jsonform/?ajax=true&random='+Math.random(), function(form)
+			{
+				$('#face').fadeOut(400);
+				$('#output').css("display", "none");
+				$('#output').html(form.jsonform);
+				rnCheck();
+				initialize();
+			});
+			return false;
+		});
+	});*/
+
 	$('.correctimg').tipsy();
 	$('.wrongimg').tipsy();
 	$('.rowimg').tipsy();
@@ -63,6 +86,19 @@ $(document).ready(function()
 	$('.muteimg').tipsy();
 	$('.logoimg').tipsy();
 	$('.resetimg').tipsy();
+	$('.switchimg').tipsy({html: true, trigger: 'manual'});
+
+	$('.switchimg').bind("click", function(event)
+	{
+		if (switchtooltip == true)
+		{
+			switchtooltip = false;
+			$('.switchimg').tipsy("hide");
+		} else {
+			switchtooltip = true;
+			$('.switchimg').tipsy("show");
+		}
+	});
 
 	initialize();
 });
@@ -78,13 +114,20 @@ function response(responseText)
 	});
 }
 
+function rnCheck()
+{
+	skippable = true;
+	$('#nameform').fadeIn(700);
+	$('#face').fadeIn(700);
+}	
+
 function deteleconfirm()
 {
 	var confirmanswer = confirm("You are about to reset your stats. Are you sure?")
 	if (confirmanswer)
 	{
 		var answer = "RESET";
-		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
+		$.post('/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
@@ -124,6 +167,68 @@ function initialize()
 		$(this).css("background-color", "#FFFFFF");
 	});
 
+	$('.thumbimg').mouseenter(function(event)
+	{
+		$(this).css("border", "1px solid black");
+	}).mouseleave(function(event)
+	{
+		$(this).css("border", "0px solid black");
+	});
+
+	$('.thumbimg').click(function(event)
+	{
+		$(this).unbind('click');
+		var answer = $(this).attr("value");
+		$.post('/name/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
+		{
+			$('#correctnum').html(data.correctAnswers);
+			$('#wrongnum').html(data.wrongAnswers);
+			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
+			if (data.valid == true)
+			{
+				if (mute == false)
+				{
+					soundHandle1.load();
+					soundHandle1.play();
+				}
+				$(".thumbimg").unbind('click');
+				$('#thumbnails').fadeOut(600);
+				$('.names').fadeOut(600, function()
+				{
+					$(this).html('<img id="loader" src="/facegame/static/images/loader.gif">');
+					$(this).fadeIn(400);
+				});
+				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function()
+				{
+					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
+				});
+				$.get('/json_thumbnails/?ajax=true&random='+Math.random(), function(data)
+				{
+					/*$('#face').fadeOut(400);*/
+					$('#thumbnails').css("display", "none");
+					$('#thumbnails').html(data.json_thumbnails);
+					$('#thumbnails').fadeIn(600);
+					/*rnCheck();*/
+					initialize();
+				});
+				return false;
+			} else
+			{
+				if (mute == false)
+				{
+					soundHandle2.load();
+					soundHandle2.play();
+				}
+				$(".thumbimg").find("value="+answer).fadeTo(700, 0.35);
+				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function()
+				{
+					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
+				});
+				return false;
+			}
+		});
+	});
+
 	/*$('.skipimg').click(function(event)
 	{
 		var answer = "SKIPSKIP";
@@ -155,7 +260,7 @@ function initialize()
 	{
 		$(this).unbind('click');
 		var answer = $(this).find("input[type=radio]").val();
-		$.post('/facegame/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
+		$.post('/updatestats/?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data)
 		{
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
@@ -184,7 +289,7 @@ function initialize()
 				{
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
-				$.get('/facegame/jsonform/?ajax=true&random='+Math.random(), function(form)
+				$.get('/jsonform/?ajax=true&random='+Math.random(), function(form)
 				{
 					$('#face').fadeOut(400);
 					$('#output').css("display", "none");

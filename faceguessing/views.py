@@ -18,14 +18,16 @@ import os
 class NameForm(forms.Form):
 	name = forms.ChoiceField(widget = forms.RadioSelect)
 
-
 def get_user_image(request):
-    player = Player.objects.get(playerid=request.user.username)
-    return HttpResponse(open("/var/www/intra.futurice.org/futupic/" + player.currentCorrectUser + ".png").read(),content_type="image/png")
+	print "get user image"
+	player = Player.objects.get(playerid="jsaa")
+	print player.currentCorrectUser
+	print player.currentRandomUsers
+	return HttpResponse(open(settings.PATH_TO_FUTUPIC +""+ player.currentCorrectUser + ".png").read(),content_type="image/png")
 
 def jsonform(request):
 	print "creating a json form"
-	connected_user = request.user.username
+	connected_user = "jsaa"
 	player = Player.objects.get(playerid=connected_user)
 	names = getAllNames(connected_user)
 	form = createForm(request, player, names)
@@ -35,13 +37,13 @@ def jsonform(request):
 
 def updatestats(request):
 	print "updating stats"
-	player = Player.objects.get(playerid=request.user.username)
-        userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
+	player = Player.objects.get(playerid="jsaa")
+	userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
 	if request.POST['answer'] == player.currentCorrectUser:
-                userstats.success += 1
-                if player.first_attempt:
-                     player.first_attempt = True
-                     userstats.first_success += 1
+		userstats.success += 1
+		if player.first_attempt:
+			player.first_attempt = True
+			userstats.first_success += 1
 		player.stats['correctAnswers'] += 1
 		player.stats['currentStreak'] += 1
          	player.usednames += [player.currentCorrectUser]
@@ -56,13 +58,19 @@ def updatestats(request):
 		player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
 		player.usednames = [request.user.username]
 		valid = False
+#	elif request.POST['answer'] == "SWITCH":
+#		if player.gamemode == 'face':
+#			player.gamemode = 'name'
+#		else:
+#			player.gamemode = 'face'
+#		valid = False
 	else:
 		player.stats['wrongAnswers'] += 1
 		player.stats['currentStreak'] = 0
                 userstats.failed_attempts += 1
-                if player.first_attempt:
-                     player.first_attempt = False
-                     userstats.failed += 1
+		if player.first_attempt:
+			player.first_attempt = False
+			userstats.failed += 1
 		valid = False
 	correctAnswers = player.stats['correctAnswers']
 	wrongAnswers = player.stats['wrongAnswers']
@@ -75,7 +83,7 @@ def updatestats(request):
 	return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
-	connected_user = request.user.username
+	connected_user = "jsaa"
 	player, create = Player.objects.get_or_create(playerid=connected_user)
 	if create:
 		print "player created"
@@ -113,42 +121,45 @@ def createForm(request, player, names):
         player.first_attempt = True
 	player.save()
 	createFormChoices(request, player, form)
+	print form
 	print "form created"
 	return form
 
 def __read_fum_user(user, connected_user):
-    user_details = cache.get("fum3-user-%s" % user)
-    if user_details is None:
-        user_details = read('user', user, username = connected_user)
-        cache.set("fum3-user-%s" % user, user_details, 10000)
-    return user_details
+	user_details = cache.get("fum3-user-%s" % user)
+	if user_details is None:
+		user_details = read('user', user, username = connected_user)
+		cache.set("fum3-user-%s" % user, user_details, 10000)
+	return user_details
 
 def createFormChoices(request, player, form):
 	print "creating form choices"
-	connected_user = request.user.username
+	connected_user = "jsaa"
 	user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
 	formchoices = [(user['uid'], user['cn']) for user in user_dicts]
         while len(formchoices) < 5:
-            formchoices.append(get_random_name())
+		formchoices.append(get_random_name())
         random.shuffle(formchoices)
 	form.fields['name'].choices = formchoices
-	request.session['choices'] = formchoices
+	#request.session['choices'] = formchoices
 	print "form choices created"
 
 def random_user(used_names, names):
+	print "randoming users"
 	names_set = set(names)
 	used_names_set = set(used_names)
 	not_used = list(names_set - used_names_set)
 	rncorrect = random.choice(not_used)
-#not_used[random.randrange(0, len(not_used))]
-	while os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png") is False:
+	while os.path.exists(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png") is False:
+		print settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png"
    		rncorrect = random.choice(not_used)
-	rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
-        missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
+
+	rncorrect_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png").read()).hexdigest()
+	missing = os.path.exists(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png")
 	while rncorrect_hash == settings.ANONYMOUS_PIC or missing is False:
    		rncorrect = random.choice(not_used)
-		rncorrect_hash = hashlib.md5(open("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png").read()).hexdigest()
-                missing = os.path.exists("/var/www/intra.futurice.org/futupic/" + rncorrect + ".png")
+		rncorrect_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png").read()).hexdigest()
+	        missing = os.path.exists(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png")
 
 	random_names = [rncorrect]
 	for ind in range(0, random.randint(2,4)):

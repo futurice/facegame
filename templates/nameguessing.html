@@ -37,25 +37,15 @@
 					<span id="skipnum">{{ player.stats.skips }}</span>-->
 				<img alt="mute" title="mute/unmute sound effects" src="/facegame/static/images/muteon.png" class="muteimg">
 				<img alt="reset" title="this will reset your stats" src="/facegame/static/images/reset.png" class="resetimg" onClick="return deteleconfirm();">
-				<img alt="switch" title="<center>Switch gamemode:</center><br><a href='#' class='mode' id='face'>Face</a> | <a href='name/' class='mode' id='name'>Name</a>" src="/facegame/static/images/switch.png" class="switchimg">
+				<img alt="switch" title="<center>Switch gamemode:</center><br><a href='../' class='mode' id='face'>Face</a> | <a href='#' class='mode' id='name'>Name</a>" src="/facegame/static/images/switch.png" class="switchimg">
 			</div>
 		</td>
 	</tr>
 </table>
-<div id="output">
-<table cellspacing="35px" align="center" id="gametable">
-	<tr>
-		<td align="right">
-			<form id="nameform" method="post">{% csrf_token %}
-			<font class="names">
-			{{ form.name }}
-			</font>
-			</form>
-			</td>
-		<td align="left">
-			<img id="face" src="/image/current/?random={{random}}">
-		</td>
-	</tr>
-</table>
+<div id="thumbnails" style="float:left;padding:1em;">
+<p class="names">{{ correct_name_translated }}</p><br>
+{% for item in thumbnailChoices %}
+<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/image/current/thumb/?choice={% cycle thumbnailChoices.0 thumbnailChoices.1 thumbnailChoices.2 thumbnailChoices.3 thumbnailChoices.4 %}">
+{% endfor %}
 </div>
 {% endblock %}

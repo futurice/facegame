@@ -1,0 +1,4 @@
+<p class="names">{{ correct_name_translated }}</p><br>
+{% for item in thumbnailChoices %}
+<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/image/current/thumb/?choice={% cycle thumbnailChoices.0 thumbnailChoices.1 thumbnailChoices.2 thumbnailChoices.3 thumbnailChoices.4 %}">
+{% endfor %}
