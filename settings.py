@@ -1,3 +1,4 @@
+"""settings for the facegame"""
 # Django settings for facegame project.
 import os
 import hashlib
@@ -109,7 +110,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#    'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
@@ -133,8 +134,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'faceguessing',
     'fumapi',
-#    'south',
-#    'sentry.client',
+    'south',
+    'sentry.client',
     'django.contrib.admin',
 )
 
@@ -147,6 +148,6 @@ SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 try:
-	from env_settings import *
+    from env_settings import *
 except ImportError:
-	print "WARNING : no env_settings"
+    print "WARNING : no env_settings"

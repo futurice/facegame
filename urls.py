@@ -1,3 +1,4 @@
+"""urls for the facegame"""
 from django.conf.urls.defaults import *
 from django.conf import settings
 from faceguessing.views import index, updatestats, jsonform, get_user_image

@@ -44,8 +44,8 @@
 </table>
 <div id="thumbnails" style="float:left;padding:1em;">
 <p class="names">{{ correct_name_translated }}</p><br>
-{% for item in thumbnailChoices %}
-<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/image/current/thumb/?choice={% cycle thumbnailChoices.0 thumbnailChoices.1 thumbnailChoices.2 thumbnailChoices.3 thumbnailChoices.4 %}">
+{% for item in thumbnail_choices %}
+<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/image/current/thumb/?choice={% cycle thumbnail_choices.0 thumbnail_choices.1 thumbnail_choices.2 thumbnail_choices.3 thumbnail_choices.4 %}">
 {% endfor %}
 </div>
 {% endblock %}
