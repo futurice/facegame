@@ -54,7 +54,7 @@ function initialize() {
 	$('.thumbimg').click(function (event) {
 		$(this).unbind('click');
 		var answer = $(this).attr("value");
-		$.post('/name/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
+		$.post('/facegame/name/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
 			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
@@ -67,8 +67,9 @@ function initialize() {
                     $(this).unbind('click');
                 });
 				$('#thumbnails').fadeOut(600, function () {
-                    $('.names').html('<img id="loader" src="/facegame/static/images/loader.gif">');
-					$('#loader').fadeIn(400);
+                    $('#thumbnails').html('<p><img id="loader" src="/facegame/static/images/loader.gif"></p>');
+					$('#thumbnails').fadeIn(400);
+					/*$('#loaderdiv').fadeIn(400);*/
                 });
 				/*$('.names').fadeOut(600, function () {
 					$('.names').html('<img id="loader" src="/facegame/static/images/loader.gif">');
@@ -77,8 +78,9 @@ function initialize() {
 				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
-				$.get('/json_thumbnails/?ajax=true&random=' + Math.random(), function (data) {
+				$.get('/facegame/json_thumbnails/?ajax=true&random=' + Math.random(), function (data) {
 					/*$('#face').fadeOut(400);*/
+					/*$('#loader').css("display", "none");*/
 					$('#thumbnails').css("display", "none");
 					$('#thumbnails').html(data.json_thumbnails);
 					$('#thumbnails').fadeIn(600);
@@ -131,7 +133,7 @@ function initialize() {
 	$('li').click(function (event) {
 		$(this).unbind('click');
 		var answer = $(this).find("input[type=radio]").val();
-		$.post('/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
+		$.post('/facegame/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
 			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
@@ -154,7 +156,7 @@ function initialize() {
 				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
-				$.get('/jsonform/?ajax=true&random=' + Math.random(), function (form) {
+				$.get('/facegame/jsonform/?ajax=true&random=' + Math.random(), function (form) {
 					$('#face').fadeOut(400);
 					$('#output').css("display", "none");
 					$('#output').html(form.jsonform);

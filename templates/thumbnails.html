@@ -1,4 +1,5 @@
 <p class="names">{{ correct_name_translated }}</p><br>
 {% for item in thumbnail_choices %}
-<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/image/current/thumb/?choice={% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}&random={{ random }}">
+<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="/facegame/image/current/thumb/?choice={% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}&random={{ random }}">
 {% endfor %}
+<form>{% csrf_token %}</form>

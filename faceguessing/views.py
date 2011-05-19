@@ -33,7 +33,7 @@ def jsonform(request):
     connected_user = request.user.username
     player = Player.objects.get(playerid=connected_user)
     names = get_all_names(connected_user)
-    form = create_form(player, names)
+    form = create_form(connected_user, player, names)
     jsonform_render = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
     print "json form rendered"
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
@@ -87,7 +87,7 @@ def index(request):
         player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
         player.save()
     names = request.session.setdefault('names', get_all_names(connected_user))
-    form = create_form(player, names)
+    form = create_form(connected_user, player, names)
     return render_to_response('template.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
 
 def get_all_names(connected_user):
@@ -99,21 +99,22 @@ def get_all_names(connected_user):
         cache.set("all-futurice-names", names, 3600)
     return names
 
-def create_form(player, names):
+def create_form(connected_user, player, names):
     """creates the form with names"""
     print "creating a form"
     form = NameForm()
     unp = Paginator(player.usednames, 1)
     unc = unp.count
     if unc > 75:
-        player.usednames = [request.user.username]
+#        player.usednames = [request.user.username]
+	player.usednmaes = [connected_user]
         player.save()
     randomusers, currentcorrect = random_user(player.usednames, names)
     player.currentRandomUsers = randomusers
     player.currentCorrectUser = currentcorrect
     player.first_attempt = True
     player.save()
-    create_form_choices(player, form)
+    create_form_choices(connected_user, player, form)
     print "form created"
     return form
 
@@ -125,10 +126,10 @@ def __read_fum_user(user, connected_user):
         cache.set("fum3-user-%s" % user, user_details, 10000)
     return user_details
 
-def create_form_choices(player, form):
+def create_form_choices(connected_user, player, form):
     """creates the choices of 5 names to the form"""
     print "creating form choices"
-    connected_user = request.user.username
+#    connected_user = request.user.username
     user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
     formchoices = [(user['uid'], user['cn']) for user in user_dicts]
     while len(formchoices) < 5:
