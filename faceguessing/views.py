@@ -1,6 +1,5 @@
 """view for the faceguessing game"""
 from django.core.cache import cache
-#from django.core.context_processors import csrf
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
@@ -8,7 +7,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
 from fumapi import read
-#from fumapi import read_list
 from django import forms
 from models import Player, UserStats
 from facegame.namegen.gen import get_random_name
@@ -103,12 +101,7 @@ def create_form(connected_user, player, names):
     """creates the form with names"""
     print "creating a form"
     form = NameForm()
-    unp = Paginator(player.usednames, 1)
-    unc = unp.count
-    if unc > 75:
-#        player.usednames = [request.user.username]
-	player.usednmaes = [connected_user]
-        player.save()
+    check_usednames(player)
     randomusers, currentcorrect = random_user(player.usednames, names)
     player.currentRandomUsers = randomusers
     player.currentCorrectUser = currentcorrect
@@ -117,6 +110,14 @@ def create_form(connected_user, player, names):
     create_form_choices(connected_user, player, form)
     print "form created"
     return form
+
+def check_usednames(player):
+    """checks if usednames are x high, and if so, resets them"""
+    unp = Paginator(player.usednames, 1)
+    unc = unp.count
+    if unc > 75:
+        player.usednames = [connected_user]
+        player.save()
 
 def __read_fum_user(user, connected_user):
     """reads user details (such as full name) from cache"""
@@ -129,7 +130,6 @@ def __read_fum_user(user, connected_user):
 def create_form_choices(connected_user, player, form):
     """creates the choices of 5 names to the form"""
     print "creating form choices"
-#    connected_user = request.user.username
     user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
     formchoices = [(user['uid'], user['cn']) for user in user_dicts]
     while len(formchoices) < 5:

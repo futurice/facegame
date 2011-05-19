@@ -1,17 +1,11 @@
 """view for nameguessing gamemode"""
-#from django.core.cache import cache
-#from django.core.context_processors import csrf
-#from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
-#from fumapi import read, read_list
-#from django import forms
 from faceguessing.models import Player, UserStats
-#from facegame.namegen.gen import get_random_name
-from faceguessing.views import __read_fum_user, get_all_names
+from faceguessing.views import __read_fum_user, get_all_names, check_usednames
 import random
 import json
 import hashlib
@@ -19,7 +13,7 @@ import os
 
 def nameguessing(request):
     """render the template when user enters site"""
-    connected_user = "jsaa" #request.user.username
+    connected_user = request.user.username
     player, create = Player.objects.get_or_create(playerid=connected_user)
     if create:
         player.currentCorrectUser = ''
@@ -50,7 +44,7 @@ def nameguessing(request):
 def get_thumbnail(request):
     """returns the thumbnail picture of given person"""
     print "getting thumbnail"
-    player = Player.objects.get(playerid="jsaa")
+    player = Player.objects.get(playerid=request.user.username)
     choice = request.GET.get('choice', '')
     for random_user in player.currentRandomUsers:
         if choice == hashlib.md5(open(settings.PATH_TO_FUTUPIC + "thumbs/" + random_user + ".jpg").read()).hexdigest():
@@ -61,7 +55,7 @@ def get_thumbnail(request):
 def json_thumbnails(request):
     """renders a new set of thumbnails to the game"""
     print "creating new thumbnails in json"
-    connected_user = "jsaa" #request.user.username
+    connected_user = request.user.username
     player = Player.objects.get(playerid=connected_user)
     names = get_all_names(connected_user)
 
@@ -90,7 +84,7 @@ def json_thumbnails(request):
 def check_hash(request):
     """checks the hash of the clicked image, to see if it's the correct or wrong answer"""
     print "updating stats"
-    connected_user = "jsaa" #request.user.username
+    connected_user = request.user.username
     player, create = Player.objects.get_or_create(playerid=connected_user)
     userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
     correct_image_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ player.currentCorrectUser + ".jpg").read()).hexdigest()
@@ -127,7 +121,8 @@ def check_hash(request):
 
 def random_user(used_names, names, player):
     """gets a set of 4 random names and 1 correct name for the player"""
-    print "randoming users thumbs"
+    check_usednames(player)
+    print "randoming users to the game"
     names_set = set(names)
     used_names_set = set(used_names)
     not_used = list(names_set - used_names_set)

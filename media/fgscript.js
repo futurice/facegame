@@ -1,4 +1,3 @@
-/*var skippable = true;*/
 var mute = true;
 var switchtooltip = false;
 var gamemode = 'face';
@@ -10,22 +9,11 @@ jQuery.preloadImages = function () {
 };
 
 function rnCheck() {
-	/*skippable = true;*/
 	$('#nameform').fadeIn(700);
 	$('#face').fadeIn(700);
 }
 
-/*function response (responseText) {
-	$('#face').fadeOut(400, function () {
-		$('#output').css("display", "none");
-		$('#output').html(responseText);
-		rnCheck();
-		initialize();
-	});
-}*/
-
 function initialize() {
-	/*$('.skipimg').fadeTo(500, 1.0);*/
 	if ($.browser.opera) {
 		$('#output').fadeIn(700);
 		$('#nameform').attr("disabled", false);
@@ -69,27 +57,18 @@ function initialize() {
 				$('#thumbnails').fadeOut(600, function () {
                     $('#thumbnails').html('<p><img id="loader" src="/facegame/static/images/loader.gif"></p>');
 					$('#thumbnails').fadeIn(400);
-					/*$('#loaderdiv').fadeIn(400);*/
                 });
-				/*$('.names').fadeOut(600, function () {
-					$('.names').html('<img id="loader" src="/facegame/static/images/loader.gif">');
-					$('.names').fadeIn(400);
-				});*/
 				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
 				$.get('/facegame/json_thumbnails/?ajax=true&random=' + Math.random(), function (data) {
-					/*$('#face').fadeOut(400);*/
-					/*$('#loader').css("display", "none");*/
 					$('#thumbnails').css("display", "none");
 					$('#thumbnails').html(data.json_thumbnails);
 					$('#thumbnails').fadeIn(600);
-					/*rnCheck();*/
 					initialize();
 				});
 				return false;
-			}
-            else {
+			} else {
 				if (mute === false) {
 					soundHandle2.load();
 					soundHandle2.play();
@@ -107,29 +86,6 @@ function initialize() {
 		});
 	});
 
-	/*$('.skipimg').click(function (event) {
-		var answer = "SKIPSKIP";
-		$.post('/facegame/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
-			$('#skipnum').html(data.skips);
-			$('.skipimg').fadeTo(500, 0.3).unbind('click');
-			$('li').unbind('click');
-			$('li').find("input[value=" + rnCorrect + "]").attr("checked", "checked");
-			$('#nameform').fadeOut(600);
-			$('#face').fadeOut(600, function () {
-				$(this).attr('src', '/facegame/static/images/loader.gif');
-				$(this).fadeIn(400);
-			});
-			$.get('/facegame/jsonform/?ajax=true&random='+Math.random(), function (form) {
-				$('#face').fadeOut(400);
-				$('#output').css("display", "none");
-				$('#output').html(form.jsonform);
-				rnCheck();
-				initialize();
-			});
-			return false;
-		});
-	});*/
-
 	$('li').click(function (event) {
 		$(this).unbind('click');
 		var answer = $(this).find("input[type=radio]").val();
@@ -143,10 +99,6 @@ function initialize() {
 					soundHandle1.play();
 				}
 				$("li").unbind('click');
-				/*$(".skipimg").fadeTo(500, 0.3).unbind('click');
-				if (skippable === true) {
-					skippable = false;
-				}*/
 				$(this).find("input[type=radio]").attr("checked", "checked");
 				$('#nameform').fadeOut(600);
 				$('#face').fadeOut(600, function () {
@@ -164,17 +116,12 @@ function initialize() {
 					initialize();
 				});
 				return false;
-			}
-            else {
+			} else {
 				if (mute === false) {
 					soundHandle2.load();
 					soundHandle2.play();
 				}
-				/*$(".skipimg").fadeTo(500, 0.3).unbind('click');
-				if (skippable === true) {
-					skippable = false;
-				}*/
-				$("li").find("input[value="+answer+"]").parent().fadeTo(700, 0.35);
+				$("li").find("input[value=" + answer + "]").parent().fadeTo(700, 0.35);
 				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function () {
 					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
 				});
@@ -184,9 +131,6 @@ function initialize() {
 		return false;
 		
 	});
-
-	/*var options = {target: '#output', success: response};
-	$('#nameform').ajaxForm(options);*/
 }
 
 $(document).ready(function () {
@@ -204,34 +148,15 @@ $(document).ready(function () {
 		if (mute === true) {
 			mute = false;
 			$('.muteimg').attr('src', '/facegame/static/images/muteoff.png');
-		}
-        else {
+		} else {
 			mute = true;
 			$('.muteimg').attr('src', '/facegame/static/images/muteon.png');
 		}
 	});
 
-	/*$('.switchimg').bind("click", function (event) {
-		var answer = "SWITCH";
-		$.post('/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data) {
-			$(".switchimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function() {
-					$(".switchimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
-				});
-			$.get('/jsonform/?ajax=true&random='+Math.random(), function(form) {
-				$('#face').fadeOut(400);
-				$('#output').css("display", "none");
-				$('#output').html(form.jsonform);
-				rnCheck();
-				initialize();
-			});
-			return false;
-		});
-	});*/
-
 	$('.correctimg').tipsy();
 	$('.wrongimg').tipsy();
 	$('.rowimg').tipsy();
-	/*$('.skipimg').tipsy();*/
 	$('.muteimg').tipsy();
 	$('.logoimg').tipsy();
 	$('.resetimg').tipsy();
@@ -241,8 +166,7 @@ $(document).ready(function () {
 		if (switchtooltip === true) {
 			switchtooltip = false;
 			$('.switchimg').tipsy("hide");
-		}
-        else {
+		} else {
 			switchtooltip = true;
 			$('.switchimg').tipsy("show");
 		}
@@ -254,12 +178,11 @@ $(document).ready(function () {
 function deteleconfirm() {
 	var confirmanswer = confirm("You are about to reset your stats. Are you sure?");
 	if (confirmanswer) {
-		var answer = "RESET";
-		$.post('/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function(data) {
+		answer = "RESET";
+		$.post('/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);
 			$('#rownum').html(data.currentStreak + ", " + data.highestStreak);
-			/*$('#skipnum').html(data.skips);*/
 			return false;
 		});
 		return false;
