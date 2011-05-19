@@ -133,9 +133,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'faceguessing',
+    'nameguessing',
     'fumapi',
     'south',
-    'sentry.client',
+#    'sentry.client',
     'django.contrib.admin',
 )
 

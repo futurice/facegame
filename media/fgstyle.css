@@ -36,3 +36,12 @@ vertical-align: middle;
 #output {
 display: none;
 }
+
+#thumbnails {
+margin-left: auto;
+margin-right: auto;
+}
+
+.thumbimg {
+border: 1px solid gray;
+}

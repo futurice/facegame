@@ -21,7 +21,7 @@ class NameForm(forms.Form):
     """class for the form"""
     name = forms.ChoiceField(widget = forms.RadioSelect)
 
-def get_user_image():
+def get_user_image(request):
     """gets the image for the requested user"""
     print "get user image"
     player = Player.objects.get(playerid=request.user.username)
@@ -54,20 +54,10 @@ def updatestats(request):
         if player.stats['highestStreak'] < player.stats['currentStreak']:
             player.stats['highestStreak'] += 1
         valid = True
-    elif request.POST['answer'] == "SKIPSKIP":
-        player.stats['skips'] += 1
-        userstats.skipped += 1
-        valid = True
     elif request.POST['answer'] == "RESET":
         player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
         player.usednames = [request.user.username]
         valid = False
-#	elif request.POST['answer'] == "SWITCH":
-#		if player.gamemode == 'face':
-#			player.gamemode = 'name'
-#		else:
-#			player.gamemode = 'face'
-#		valid = False
     else:
         player.stats['wrongAnswers'] += 1
         player.stats['currentStreak'] = 0
@@ -145,7 +135,6 @@ def create_form_choices(player, form):
         formchoices.append(get_random_name())
     random.shuffle(formchoices)
     form.fields['name'].choices = formchoices
-    #request.session['choices'] = formchoices
     print "form choices created"
 
 def random_user(used_names, names):

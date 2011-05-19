@@ -9,28 +9,6 @@ jQuery.preloadImages = function () {
 	} 
 };
 
-$('html').ajaxSend(function (event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-        // Only send the token to relative URLs i.e. locally.
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-});
-
 function rnCheck() {
 	/*skippable = true;*/
 	$('#nameform').fadeIn(700);
@@ -70,7 +48,7 @@ function initialize() {
 	$('.thumbimg').mouseenter(function (event) {
 		$(this).css("border", "1px solid black");
 	}).mouseleave(function (event) {
-		$(this).css("border", "0px solid black");
+		$(this).css("border", "1px solid gray");
 	});
 
 	$('.thumbimg').click(function (event) {
@@ -85,12 +63,17 @@ function initialize() {
 					soundHandle1.load();
 					soundHandle1.play();
 				}
-				$(".thumbimg").unbind('click');
-				$('#thumbnails').fadeOut(600);
-				$('.names').fadeOut(600, function () {
-					$(this).html('<img id="loader" src="/facegame/static/images/loader.gif">');
-					$(this).fadeIn(400);
-				});
+				$(".thumbimg").each(function () {
+                    $(this).unbind('click');
+                });
+				$('#thumbnails').fadeOut(600, function () {
+                    $('.names').html('<img id="loader" src="/facegame/static/images/loader.gif">');
+					$('#loader').fadeIn(400);
+                });
+				/*$('.names').fadeOut(600, function () {
+					$('.names').html('<img id="loader" src="/facegame/static/images/loader.gif">');
+					$('.names').fadeIn(400);
+				});*/
 				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
@@ -109,7 +92,11 @@ function initialize() {
 					soundHandle2.load();
 					soundHandle2.play();
 				}
-				$(".thumbimg").find("value="+answer).fadeTo(700, 0.35);
+				$(".thumbimg").each(function () {
+                    if ($(this).attr("value") === answer) {
+                        $(this).fadeTo(700, 0.35);
+                    }
+                });
 				$(".wrongimg").animate({"width": "+=5px", "height": "+=5px"}, 300, function () {
 					$(".wrongimg").animate({"width": "-=5px", "height": "-=5px"}, 350);
 				});

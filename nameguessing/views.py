@@ -19,7 +19,7 @@ import os
 
 def nameguessing(request):
     """render the template when user enters site"""
-    connected_user = request.user.username
+    connected_user = "jsaa" #request.user.username
     player, create = Player.objects.get_or_create(playerid=connected_user)
     if create:
         player.currentCorrectUser = ''
@@ -32,6 +32,7 @@ def nameguessing(request):
     randomusers, currentcorrect = random_user(player.usednames, names, player)
     player.currentRandomUsers = randomusers
     player.currentCorrectUser = currentcorrect
+    player.save()
 
     user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
     thumbnail_choices = [user['uid'] for user in user_dicts]
@@ -44,30 +45,30 @@ def nameguessing(request):
         choice_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ user + ".jpg").read()).hexdigest()
         image_hashes.append(choice_hash)
     player.save()
-    return render_to_response('nameguessing.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated}, context_instance=RequestContext(request, {}))
+    return render_to_response('nameguessing.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
 
 def get_thumbnail(request):
     """returns the thumbnail picture of given person"""
     print "getting thumbnail"
-    thumbnail_choices = request.GET.get('choice', '')
-    print thumbnail_choices
-#	correctThumb = open(settings.PATH_TO_FUTUPIC +"thumbs/"+ player.currentCorrectUser + ".jpg").read()
-#	randomThumbs = [correctThumb]
-#	for item in player.currentRandomUsers:
-#		randomThumbs.append(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ item + ".jpg").read())
-#	random.shuffle(randomThumbs)
-    return HttpResponse(open(settings.PATH_TO_FUTUPIC + "thumbs/" + thumbnail_choices + ".jpg").read(), content_type="image/jpg")
+    player = Player.objects.get(playerid="jsaa")
+    choice = request.GET.get('choice', '')
+    for random_user in player.currentRandomUsers:
+        if choice == hashlib.md5(open(settings.PATH_TO_FUTUPIC + "thumbs/" + random_user + ".jpg").read()).hexdigest():
+            user = random_user
+            break
+    return HttpResponse(open(settings.PATH_TO_FUTUPIC + "thumbs/" + user + ".jpg").read(), content_type="image/jpg")
 
 def json_thumbnails(request):
     """renders a new set of thumbnails to the game"""
     print "creating new thumbnails in json"
-    connected_user = request.user.username
+    connected_user = "jsaa" #request.user.username
     player = Player.objects.get(playerid=connected_user)
     names = get_all_names(connected_user)
 
     randomusers, currentcorrect = random_user(player.usednames, names, player)
     player.currentRandomUsers = randomusers
     player.currentCorrectUser = currentcorrect
+    player.save()
 
     user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
     thumbnail_choices = [user['uid'] for user in user_dicts]
@@ -81,7 +82,7 @@ def json_thumbnails(request):
         choice_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ user + ".jpg").read()).hexdigest()
         image_hashes.append(choice_hash)
 
-    json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated}, context_instance=RequestContext(request, {}))
+    json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
     print "json thumbnails rendered"
     player.save()
     return HttpResponse(json.dumps({'json_thumbnails': json_thumbnails_render}), content_type='application/json')
@@ -89,7 +90,7 @@ def json_thumbnails(request):
 def check_hash(request):
     """checks the hash of the clicked image, to see if it's the correct or wrong answer"""
     print "updating stats"
-    connected_user = request.user.username
+    connected_user = "jsaa" #request.user.username
     player, create = Player.objects.get_or_create(playerid=connected_user)
     userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
     correct_image_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ player.currentCorrectUser + ".jpg").read()).hexdigest()
