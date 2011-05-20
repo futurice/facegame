@@ -116,7 +116,7 @@ def check_usednames(player):
     unp = Paginator(player.usednames, 1)
     unc = unp.count
     if unc > 75:
-        player.usednames = [connected_user]
+        player.usednames = [player.playerid]
         player.save()
 
 def __read_fum_user(user, connected_user):
