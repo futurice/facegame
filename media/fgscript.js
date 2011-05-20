@@ -160,17 +160,7 @@ $(document).ready(function () {
 	$('.muteimg').tipsy();
 	$('.logoimg').tipsy();
 	$('.resetimg').tipsy();
-	$('.switchimg').tipsy({html: true, trigger: 'manual'});
-
-	$('.switchimg').bind("click", function (event) {
-		if (switchtooltip === true) {
-			switchtooltip = false;
-			$('.switchimg').tipsy("hide");
-		} else {
-			switchtooltip = true;
-			$('.switchimg').tipsy("show");
-		}
-	});
+	$('.switchimg').tipsy();
 
 	initialize();
 });
