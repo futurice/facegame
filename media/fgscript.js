@@ -1,6 +1,4 @@
 var mute = true;
-var switchtooltip = false;
-var gamemode = 'face';
 
 jQuery.preloadImages = function () {
 	for (i = 0; i < arguments.length; i++) {
