@@ -93,7 +93,7 @@ def get_all_names(connected_user):
     print "getting all names"
     names = cache.get("all-futurice-names")
     if names is None:
-        names = [user['rdn_value'] for user in read('group', 'Futurice', username = connected_user)['uniqueMember']]
+        names = [user['rdn_value'] for user in read('group', 'Futurice', username = connected_user, extra_query='include=uniqueMember&include=rdn_value')['uniqueMember']]
         cache.set("all-futurice-names", names, 3600)
     return names
 
