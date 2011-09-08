@@ -166,7 +166,7 @@ $(document).ready(function () {
 function deteleconfirm() {
 	var confirmanswer = confirm("You are about to reset your stats. Are you sure?");
 	if (confirmanswer) {
-		answer = "RESET";
+		var answer = "RESET";
 		$.post('/updatestats/?ajax=true&random=' + Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
 			$('#correctnum').html(data.correctAnswers);
 			$('#wrongnum').html(data.wrongAnswers);

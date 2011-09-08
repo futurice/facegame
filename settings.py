@@ -22,7 +22,7 @@ ANONYMOUS_PIC = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media
 ANONYMOUS_THUMB = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymousthumb.jpg").read()).hexdigest()
 PATH_TO_FUTUPIC = "/var/www/intra.futurice.org/futupic/"
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -136,7 +136,7 @@ INSTALLED_APPS = (
     'nameguessing',
     'fumapi',
     'south',
-#    'sentry.client',
+    'sentry.client',
     'django.contrib.admin',
 )
 
@@ -151,4 +151,4 @@ SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
 try:
     from env_settings import *
 except ImportError:
-    print "WARNING : no env_settings"
+    print "no env_settings"
