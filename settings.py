@@ -136,7 +136,9 @@ INSTALLED_APPS = (
     'nameguessing',
     'fumapi',
     'south',
-    'sentry.client',
+    'paging',
+    'indexer',
+    'raven.contrib.django',
     'django.contrib.admin',
 )
 
@@ -144,7 +146,7 @@ IMAGEDIR = "/var/www/intra.futurice.org/futupic"
 
 SENTRY_TESTING = True
 SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
-SENTRY_REMOTE_URL = 'https://sentry.futurice.com/sentry/store/'
+SENTRY_SERVERS = ['https://sentry.futurice.com/sentry/store/']
 #SESSION_COOKIE_AGE = 1209600
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
