@@ -27,7 +27,7 @@ class PickledObjectField(models.Field):
                 # If an error was raised, just return the plain value
                 return value
 	
-    def get_db_prep_save(self, value):
+    def get_db_prep_save(self, value, connection):
         if value is not None and not isinstance(value, PickledObject):
             value = PickledObject(pickle.dumps(value))
         return value
@@ -67,3 +67,5 @@ class UserStats(models.Model):
     first_success = models.IntegerField(default=0)
     last_shown = models.DateTimeField(auto_now=True)
     skipped = models.IntegerField(default=0)
+
+

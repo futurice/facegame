@@ -22,7 +22,7 @@ ANONYMOUS_PIC = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media
 ANONYMOUS_THUMB = hashlib.md5(open(os.path.join(os.path.dirname(__file__))+"/media/images/anonymousthumb.jpg").read()).hexdigest()
 PATH_TO_FUTUPIC = "/var/www/intra.futurice.org/futupic/"
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = True
 
 ADMINS = (
@@ -97,18 +97,19 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-#CACHES = {
-#    'default': {
-#        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-#        'LOCATION': 'facegame',
-#    }
-#}
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'facegamecache',
+    }
+}
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfMiddleware',
+#    'django.middleware.csrf.CsrfMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

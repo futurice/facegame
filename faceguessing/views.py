@@ -21,24 +21,20 @@ class NameForm(forms.Form):
 
 def get_user_image(request):
     """gets the image for the requested user"""
-    print "get user image"
     player = Player.objects.get(playerid=request.user.username)
     return HttpResponse(open(settings.PATH_TO_FUTUPIC + "" + player.currentCorrectUser + ".png").read(), content_type="image/png")
 
 def jsonform(request):
     """returns a new form in json"""
-    print "creating a json form"
     connected_user = request.user.username
     player = Player.objects.get(playerid=connected_user)
     names = get_all_names(connected_user)
     form = create_form(connected_user, player, names)
     jsonform_render = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
-    print "json form rendered"
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
 
 def updatestats(request):
     """updates stats when something is clicked, i.e. wrong or correct answer"""
-    print "updating stats"
     player = Player.objects.get(playerid=request.user.username)
     userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
     if request.POST['answer'] == player.currentCorrectUser:
@@ -71,7 +67,6 @@ def updatestats(request):
     highestStreak = player.stats['highestStreak']
     player.save()
     userstats.save()
-    print "stats updated"
     return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
@@ -90,7 +85,6 @@ def index(request):
 
 def get_all_names(connected_user):
     """gets the names of every Futurice employee"""
-    print "getting all names"
     names = cache.get("all-futurice-names")
     if names is None:
         names = [user['rdn_value'] for user in read('group', 'Futurice', username=connected_user, include=["uniqueMember", "rdn_value"])['uniqueMember']]
@@ -99,7 +93,6 @@ def get_all_names(connected_user):
 
 def create_form(connected_user, player, names):
     """creates the form with names"""
-    print "creating a form"
     form = NameForm()
     check_usednames(player)
     randomusers, currentcorrect = random_user(player.usednames, names)
@@ -108,7 +101,6 @@ def create_form(connected_user, player, names):
     player.first_attempt = True
     player.save()
     create_form_choices(connected_user, player, form)
-    print "form created"
     return form
 
 def check_usednames(player):
@@ -129,24 +121,20 @@ def __read_fum_user(user, connected_user):
 
 def create_form_choices(connected_user, player, form):
     """creates the choices of 5 names to the form"""
-    print "creating form choices"
     user_dicts = [__read_fum_user(user, connected_user) for user in player.currentRandomUsers]
     formchoices = [(user['uid'], user['cn']) for user in user_dicts]
     while len(formchoices) < 5:
         formchoices.append(get_random_name())
     random.shuffle(formchoices)
     form.fields['name'].choices = formchoices
-    print "form choices created"
 
 def random_user(used_names, names):
     """gets 4 random names and 1 correct name"""
-    print "randoming users"
     names_set = set(names)
     used_names_set = set(used_names)
     not_used = list(names_set - used_names_set)
     rncorrect = random.choice(not_used)
     while os.path.exists(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png") is False:
-        print settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png"
         rncorrect = random.choice(not_used)
 
     rncorrect_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC +""+ rncorrect + ".png").read()).hexdigest()
@@ -164,3 +152,4 @@ def random_user(used_names, names):
         random_names.append(rn)
     random.shuffle(random_names)
     return random_names, rncorrect
+
