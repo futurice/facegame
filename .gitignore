@@ -1,0 +1,9 @@
+syntax: glob
+ 
+*.pyc
+*.pid
+*.sock
+facegamedb
+env_settings.py
+media/futupic/
+venv/
