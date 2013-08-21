@@ -10,7 +10,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^', include('fumapi.urls', namespace='fumapi')),
     url(r'^$', index),
     url(r'^updatestats/', updatestats),
     url(r'^jsonform/', jsonform),
@@ -29,3 +28,26 @@ urlpatterns = patterns('',
 
     (r'^admin/', include(admin.site.urls)),
 )
+
+# Development settings
+# if settings.DEBUG:
+#     urlpatterns = patterns('',
+#         url(r'^facegame/$', index),
+#         url(r'^facegame/updatestats/', updatestats),
+#         url(r'^facegame/jsonform/', jsonform),
+#         url(r'^facegame/image/current/thumb/', get_thumbnail),
+#         url(r'^facegame/image/current/', get_user_image),
+#         url(r'^facegame/hall_of_fame$', hall_of_fame),
+#         url(r'^facegame/name/updatestats', check_hash),
+#         url(r'^facegame/name/', nameguessing),
+#         url(r'^facegame/json_thumbnails/', json_thumbnails),
+
+        
+#         (r'^facegame/static/(?P<path>.*)$', 'django.views.static.serve',
+#             {'document_root': settings.STATIC_ROOT}),
+#         #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+#         # {'document_root': settings.STATIC_ROOT}),
+
+#         (r'^admin/', include(admin.site.urls)),
+#     )
+

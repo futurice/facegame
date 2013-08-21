@@ -2,17 +2,13 @@
 # Django settings for facegame project.
 import os
 import hashlib
+import slumber
 
 # ---- FUM API settings
-FUMAPI_CONNECTION = {
-    'USER': 'facegame',
-    'PASSWORD': 'G4HJ1vLdhA',
-    'SERVERS': ['https://fum3.futurice.com/api/',],
-    'FUMAPI_ROOT': '/',
-}
 FUMAPI_LOGFILE = 'access.log'
 
 FUMAPI_CACHE = '/tmp/fumapicache_facegame/'
+API=slumber.API("http://localhost:8000/api/") # TODO: Authenticate
 # ----
 
 STATIC_ROOT = os.path.abspath("media")
@@ -135,7 +131,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'faceguessing',
     'nameguessing',
-    'fumapi',
     'south',
     'paging',
     'indexer',

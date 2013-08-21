@@ -6,7 +6,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
-from fumapi import read, read_list
 from django import forms
 from faceguessing.models import Player, UserStats
 from faceguessing.views import __read_fum_user
@@ -28,7 +27,7 @@ def hall_of_fame(request):
          if item.stats['highestStreak'] < 5:
              continue
          try:
-             user = __read_fum_user(item.playerid, request.user.username)
+             user = __read_fum_user(item.playerid)
          except:
              continue
          hall_of_fame.append({"highestStreak": item.stats["highestStreak"], "wrongAnswers": item.stats["wrongAnswers"], 'user': user})

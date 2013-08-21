@@ -11,6 +11,26 @@ function rnCheck() {
 	$('#face').fadeIn(700);
 }
 
+function new_thumbs(){
+	
+	$(".thumbimg").each(function () {
+        $(this).unbind('click');
+    });
+
+	$('#thumbnails').fadeOut(600, function () {
+ 		$('#thumbnails').html('<p><img id="loader" src="/facegame/static/images/loader.gif"></p>');
+		$('#thumbnails').fadeIn(400);
+		$.get('/facegame/json_thumbnails/?ajax=true&random=' + Math.random(), function (data) {
+			$('#thumbnails').hide();
+			$('#thumbnails').html(data.json_thumbnails);
+			$('#thumbnails').fadeIn(400);
+			initialize();
+		});
+    });
+	
+	
+}
+
 function initialize() {
 	if ($.browser.opera) {
 		$('#output').fadeIn(700);
@@ -49,22 +69,10 @@ function initialize() {
 					soundHandle1.load();
 					soundHandle1.play();
 				}
-				$(".thumbimg").each(function () {
-                    $(this).unbind('click');
-                });
-				$('#thumbnails').fadeOut(600, function () {
-                    $('#thumbnails').html('<p><img id="loader" src="/facegame/static/images/loader.gif"></p>');
-					$('#thumbnails').fadeIn(400);
-                });
 				$(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
 					$(".correctimg").animate({"width": "-=6px", "height": "-=6px"}, 350);					
 				});
-				$.get('/facegame/json_thumbnails/?ajax=true&random=' + Math.random(), function (data) {
-					$('#thumbnails').css("display", "none");
-					$('#thumbnails').html(data.json_thumbnails);
-					$('#thumbnails').fadeIn(600);
-					initialize();
-				});
+				new_thumbs();
 				return false;
 			} else {
 				if (mute === false) {
@@ -160,7 +168,7 @@ $(document).ready(function () {
 	$('.resetimg').tipsy();
 	$('.switchimg').tipsy();
 
-	initialize();
+	new_thumbs();
 });
 
 function deteleconfirm() {
