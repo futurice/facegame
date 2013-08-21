@@ -1,0 +1,11 @@
+Django==1.2
+South==0.8.1
+argparse==1.2.1
+django-paging==0.2.5
+django-templatetag-sugar==0.1
+httplib2==0.8
+indexer==0.6.2
+raven==3.4.1
+requests==1.2.3
+slumber==0.6.0
+wsgiref==0.1.2
