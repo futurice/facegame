@@ -1,11 +1,12 @@
-"""view for nameguessing gamemode"""
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
-from faceguessing.models import Player, UserStats
-from faceguessing.views import __read_fum_user, get_all_names, check_usednames, random_user, hash_thumb
+
+from facegame.faceguessing.models import Player, UserStats
+from facegame.faceguessing.views import __read_fum_user, get_all_names, check_usednames, random_user, hash_thumb
+
 import random
 import json
 import hashlib

@@ -7,8 +7,11 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
 from django import forms
+from django.contrib.auth.decorators import login_required
+
 from models import Player, UserStats
 from facegame.namegen.gen import get_random_name
+
 import random
 import json
 import hashlib
@@ -80,6 +83,7 @@ def index(request):
         player.save()
     names = request.session.setdefault('names', get_all_names())
     form = create_form(player, names)
+    import pdb; pdb.set_trace()
     return render_to_response('template.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
 
 def get_all_names():
@@ -146,7 +150,6 @@ def random_user(used_names, names, player):
         while rn in random_names or rn in player.usednames or rn_hash == settings.ANONYMOUS_THUMB or not os.path.exists(settings.PATH_TO_FUTUPIC + "thumbs/" + rn + ".jpg"):
             rn = names[random.randrange(0, len(names))]
         rn_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC + "thumbs/" + rn + ".jpg").read()).hexdigest()
-
         random_names.append(rn)
     random.shuffle(random_names)
     return random_names, rncorrect
