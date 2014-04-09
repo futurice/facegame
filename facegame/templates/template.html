@@ -9,8 +9,6 @@
 		var highestStreak = {{ player.stats.highestStreak }};
 		var skips = {{ player.stats.skips }};
 	</script>
-	
-	<script src="/facegame/static/fgscript.js"></script>
 {% endblock %}
 	
 {% block body %}
@@ -20,22 +18,22 @@
 <table cellspacing="8px" align="center">
 	<tr>
 		<td>
-			<img alt="futurice logo" title="Futurice Facegame, mainly designed for new employees to get familiar with the names and faces around Futurice. Don't worry about guessing wrong, there's no losing in this game. See how many you can recognize!" src="/facegame/static/images/logo.png" class="logoimg">
+            <img alt="futurice logo" title="Futurice Facegame, mainly designed for new employees to get familiar with the names and faces around Futurice. Don't worry about guessing wrong, there's no losing in this game. See how many you can recognize!" src="{{STATIC_URL}}img/logo.png" class="logoimg">
 		</td>
 		<td valign="bottom">
 			<p class="logotxt">
 				Futurice Facegame
 			</p>
 			<div id="scoretxt" class="scoretxt">
-				<img alt="correct" title="sum of correct answers" src="/facegame/static/images/correct.gif" class="correctimg">
+                <img alt="correct" title="sum of correct answers" src="{{STATIC_URL}}img/correct.gif" class="correctimg">
 					<span id="correctnum">{{ player.stats.correctAnswers }}</span>
-				<img alt="wrong" title="sum of wrong answers" src="/facegame/static/images/wrong.gif" class="wrongimg">
+                <img alt="wrong" title="sum of wrong answers" src="{{STATIC_URL}}img/wrong.gif" class="wrongimg">
 					<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
-				<img alt="row" title="number of correct answers in a row (and highest record)" src="/facegame/static/images/row.png" class="rowimg">
+                <img alt="row" title="number of correct answers in a row (and highest record)" src="{{STATIC_URL}}img/row.png" class="rowimg">
 					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
-				<img alt="mute" title="mute/unmute sound effects" src="/facegame/static/images/muteon.png" class="muteimg">
-				<img alt="reset" title="this will reset your stats" src="/facegame/static/images/reset.png" class="resetimg" onClick="return deteleconfirm();">
-                <a href="name/"><img alt="switch" title="switch the gamemode" src="/facegame/static/images/switch.png" class="switchimg"></a>
+                <img alt="mute" title="mute/unmute sound effects" src="{{STATIC_URL}}img/muteon.png" class="muteimg">
+                <img alt="reset" title="this will reset your stats" src="{{STATIC_URL}}img/reset.png" class="resetimg" onClick="return deteleconfirm();">
+                <a href="name/"><img alt="switch" title="switch the gamemode" src="{{STATIC_URL}}img/switch.png" class="switchimg"></a>
 			</div>
 		</td>
 	</tr>
@@ -51,7 +49,7 @@
 			</form>
 			</td>
 		<td align="left">
-			<img id="face" src="/facegame/image/current/?random={{random}}">
+            <img id="face" src="{{choice}}" class="thumb_size">
 		</td>
 	</tr>
 </table>

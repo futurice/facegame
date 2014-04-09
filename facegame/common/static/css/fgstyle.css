@@ -7,7 +7,7 @@ padding: 10px;
 }
 
 input[type="radio"] {
-display: none;
+xdisplay: none;
 }
 
 .names {
@@ -34,7 +34,7 @@ vertical-align: middle;
 }
 
 #output {
-display: none;
+xdisplay: none;
 }
 
 #thumbnails {
@@ -44,4 +44,8 @@ margin-right: auto;
 
 .thumbimg {
 border: 1px solid gray;
+}
+
+.thumb_size {
+    width: 250px;
 }

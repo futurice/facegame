@@ -1,20 +1,25 @@
+{% load assets %}
 <html>
 <head>
-	<script src="/facegame/static/jquery.min.js"></script>
-	<script src="/facegame/static/jquery.form.js"></script>
+    <meta charset="utf-8">
+    {% assets 'css/base.css' %}
 
-	<script type='text/javascript' src='/facegame/static/jquery.tipsy.js'></script>
-	<link rel="stylesheet" href="/facegame/static/tipsy.css" type="text/css" />
-	<link rel="stylesheet" href="/facegame/static/fgstyle.css" type="text/css" />
+    {% block header %}
+    {% endblock %}
 
-
-{% block header %}
-{% endblock %}
-	
 	<title>Futufaces</title>
 </head>
 <body>
 {% block body %}
 {% endblock %}
+
+<script type="text/javascript">
+try { console.assert(1); } catch(e) { console = { log: function() {}, assert: function() {} } }
+var URLS_BASE='{{settings.URLS_BASE}}';
+var STATIC_URL='{{STATIC_URL}}';
+</script>
+
+{% assets 'js/base.js' %}
+
 </body>
 </html>

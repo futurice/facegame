@@ -1,0 +1,25 @@
+generate:
+
+- js/base.js:
+    source:
+    - facegame/common/static/js/jquery.min.js
+    - facegame/common/static/js/jquery.form.js
+    - facegame/common/static/js/jquery.tipsy.js
+    - facegame/common/static/js/dutils.js
+    - facegame/common/static/js/gen/dutils.conf.urls.js
+    - facegame/common/static/js/fgscript.js
+    - facegame/common/static/js/base.js
+    uglify.bin: jsmin
+
+- css/base.css:
+    source:
+    - facegame/common/static/css/tipsy.css
+    - facegame/common/static/css/fgstyle.css
+
+output.directory: static
+output.hashed: true
+output.manifest: assets.json
+
+profile.dev:
+    css.compress: false
+    js.compress: false

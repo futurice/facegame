@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 
 from models import Player, UserStats
 from facegame.namegen.gen import get_random_name
+from facegame.common.helpers import get_api, to_json
 
 import random
 import json
@@ -22,23 +23,28 @@ class NameForm(forms.Form):
     name = forms.ChoiceField(widget = forms.RadioSelect)
 
 def get_user_image(request):
-    """gets the image for the requested user"""
-    player = Player.objects.get(playerid=request.user.username)
-    return HttpResponse(open(settings.PATH_TO_FUTUPIC + "" + player.currentCorrectUser + ".png").read(), content_type="image/png")
+    data = {'image': get_user(request.user.username)['portrait_thumb_url']}
+    return to_json(data)
 
 def jsonform(request):
     """returns a new form in json"""
-    connected_user = request.user.username
-    player = Player.objects.get(playerid=connected_user)
+    player = request.user
     names = get_all_names()
     form = create_form(player, names)
-    jsonform_render = render_to_string('form.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
+    rand_choice = player.currentCorrectUser
+    jsonform_render = render_to_string('form.html', {
+        'form': form,
+        'player': player,
+        'choice': get_user(rand_choice)['portrait_thumb_url'],
+        'random': random.randint(1, 10000000)},
+        context_instance=RequestContext(request, {}))
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
 
 def updatestats(request):
     """updates stats when something is clicked, i.e. wrong or correct answer"""
-    player = Player.objects.get(playerid=request.user.username)
-    userstats, created = UserStats.objects.get_or_create(username=player.currentCorrectUser)
+    # correct choice check hash(username)==hash
+    player = request.user
+    userstats, created = UserStats.objects.get_or_create(user=player)
     if request.POST['answer'] == player.currentCorrectUser:
         userstats.success += 1
         if player.first_attempt:
@@ -72,27 +78,19 @@ def updatestats(request):
     return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
 
 def index(request):
-    """render the game when player enters first time"""
-    connected_user = request.user.username
-    player, create = Player.objects.get_or_create(playerid=connected_user)
-    if create:
-        player.currentCorrectUser = ''
-        player.currentRandomUsers = []
-        player.usednames = [request.user.username]
-        player.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
-        player.save()
+    player = request.user
     names = request.session.setdefault('names', get_all_names())
     form = create_form(player, names)
-    import pdb; pdb.set_trace()
-    return render_to_response('template.html', {'form': form, 'player': player, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
+    rand_choice = player.currentCorrectUser
+    return render_to_response('template.html',{
+        'form': form,
+        'player': player,
+        'choice': get_user(rand_choice)['portrait_thumb_url'],
+        },
+        context_instance=RequestContext(request, {}))
 
 def get_all_names():
-    """gets the names of every Futurice employee"""
-    usernames = cache.get("all-futurice-usernames")
-    if usernames is None:
-        usernames = settings.API.groups("Futurice").get()['users']
-        cache.set("all-futurice-usernames", usernames, 3600)
-    return usernames
+    return [k['username'] for k in get_game_data()['users']]
 
 def create_form(player, names):
     """creates the form with names"""
@@ -105,25 +103,72 @@ def create_form(player, names):
     create_form_choices(player, form)
     return form
 
+def is_valid_username(name):
+    return name in get_all_names()
+
+def valid_usernames(l):
+    rs = []
+    for username in l:
+        if is_valid_username(username):
+            rs.append(username)
+    return rs
+
 def check_usednames(player):
     """checks if usednames are x high, and if so, resets them"""
-    unp = Paginator(player.usednames, 1)
-    unc = unp.count
-    if unc > 75:
-        player.usednames = [player.playerid]
+    # 'usednames' might not contain valid users anymore
+    for username in player.usednames:
+        if not is_valid_username(username):
+            player.usednames.pop(player.usednames.index(username))
+
+    page = Paginator(player.usednames, 1)
+    if page.count>75:
+        player.usednames = [player.username]
         player.save()
 
-def __read_fum_user(user):
-    """reads user details (such as full name) from cache"""
-    user_details = cache.get("fum5-user-%s" % user)
-    if user_details is None:
-        user_details = settings.API.users(user).get()
-        cache.set("fum5-user-%s" % user, user_details, 10000)
-    return user_details
+def get_comparison_hash(name):
+    return hashlib.md5(settings.THUMB_SALT + name).hexdigest()
+
+GAME_DATA = None
+def get_game_data():
+    global GAME_DATA
+    if GAME_DATA is None:
+        data = {'users': []}
+        users = get_users()
+        for user in users:
+            user['img_hash'] = get_comparison_hash(user['portrait_thumb_url'])
+        data['users'] = users
+        GAME_DATA = data
+    return GAME_DATA
+
+def get_users():
+    """ Get users that have a thumbnail portrait of themselves """
+    groups = ['Futurice', 'External']
+    KEY = 'fum-users'
+    result = cache.get(KEY)
+    if result is None:
+        usernames = []
+        for group in groups:
+            usernames += get_api().groups(group).get().get('users')
+        usernames = list(set(usernames))
+        result = []
+        for username in usernames:
+            user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
+            if 'thumb' in user.get('portrait_thumb_url'):
+                result.append(user)
+        cache.set(KEY, result)
+    return result
+
+def get_kilod(l, value, key='username'):
+    """ get key in list of dictionaries """
+    r = [k for k in l if k[key]==value]
+    return r[0] if r else None
+
+def get_user(username):
+    return get_kilod(get_game_data()['users'], username, key='username')
 
 def create_form_choices(player, form):
     """creates the choices of 5 names to the form"""
-    user_dicts = [__read_fum_user(user) for user in player.currentRandomUsers]
+    user_dicts = [k for k in [get_user(user) for user in player.currentRandomUsers] if k]
     formchoices = [(user['username'], "%s %s"%(user['first_name'], user['last_name'])) for user in user_dicts]
     while len(formchoices) < 5:
         formchoices.append(get_random_name())
@@ -133,28 +178,21 @@ def create_form_choices(player, form):
 def random_user(used_names, names, player):
     """gets a set of 4 random names and 1 correct name for the player"""
     check_usednames(player)
-    names_set = set(names)
-    used_names_set = set(used_names)
+    names_set = set(valid_usernames(names))
+    used_names_set = set(valid_usernames(used_names))
     not_used = list(names_set - used_names_set)
     
-    rncorrect = False
-    rncorrect_hash = None
-    while not rncorrect or not os.path.exists(settings.PATH_TO_FUTUPIC + "thumbs/" + rncorrect + ".jpg") or rncorrect_hash == settings.ANONYMOUS_THUMB:
-        rncorrect = random.choice(not_used)
-    rncorrect_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC + "thumbs/" + rncorrect + ".jpg").read()).hexdigest()
+    rncorrect = random.choice(not_used)
 
     random_names = [rncorrect]
     for ind in range(0, 4):
         rn = ""
-        rn_hash = ""
-        while rn in random_names or rn in player.usednames or rn_hash == settings.ANONYMOUS_THUMB or not os.path.exists(settings.PATH_TO_FUTUPIC + "thumbs/" + rn + ".jpg"):
+        while rn in random_names or rn in player.usednames:
             rn = names[random.randrange(0, len(names))]
-        rn_hash = hashlib.md5(open(settings.PATH_TO_FUTUPIC + "thumbs/" + rn + ".jpg").read()).hexdigest()
-        random_names.append(rn)
+        if rn:
+            random_names.append(rn)
     random.shuffle(random_names)
     return random_names, rncorrect
 
 def hash_thumb(username):
-    if os.path.exists(settings.PATH_TO_FUTUPIC + "thumbs/" + username + ".jpg"):
-        return hashlib.md5(open(settings.PATH_TO_FUTUPIC +"thumbs/"+ username + ".jpg").read()).hexdigest()
-    return None
+    return get_user(username)['img_hash']

@@ -1,5 +1,5 @@
-"""models for faceguessing"""
 from django.db import models
+from django.contrib.auth.models import User, AbstractBaseUser, AbstractUser
 
 try:
     import cPickle as pickle
@@ -45,22 +45,29 @@ class PickledObjectField(models.Field):
         else:
             raise TypeError('Lookup type %s is not supported.' % lookup_type)
 
-class Player(models.Model):
-    """created for every player and used to track his stats"""
-    playerid = models.CharField(max_length=5, primary_key=True)
 
-    usednames = PickledObjectField()
+class Player(AbstractUser):
+    usednames = PickledObjectField()#list of known usernames
     currentRandomUsers = PickledObjectField()
     currentCorrectUser = models.CharField(max_length=5)
     first_attempt = models.BooleanField(default=True)
 
     stats = PickledObjectField()
-    def __unicode__(self):
-        return self.playerid
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.currentCorrectUser = ''
+            self.currentRandomUsers = []
+            self.usednames = [self.username]
+            self.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
+        super(Player, self).save(*args, **kwargs)
+Player._meta.get_field('password').null = True
+Player._meta.get_field('password').blank = True
 
 class UserStats(models.Model):
     """stats for users that are being guessed, i.e. this user has been guessed X times wrong"""
-    username = models.CharField(max_length=10, primary_key=True)
+    user = models.ForeignKey(Player)
+
     failed_attempts = models.IntegerField(default=0)
     failed = models.IntegerField(default=0)
     success = models.IntegerField(default=0)

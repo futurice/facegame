@@ -1,25 +1,18 @@
 import django.conf.global_settings as DEFAULT_SETTINGS
-
 import os, hashlib, datetime, copy
-import slumber
 
 PACKAGE_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJECT_ROOT = os.path.normpath(PACKAGE_ROOT)
 DEPLOYMENT_ROOT = PROJECT_ROOT
 
 FUM_API_URL = 'https://api.fum.futurice.com/v1/'
-FUM_API_TOKEN = '46eab140e97bd7594102a774de5921765e0db298'
-API = slumber.API(FUM_API_URL, auth=slumber.auth.TokenAuth(FUM_API_TOKEN))
+FUM_API_TOKEN = 'a216c36d4bf3ea59fd802388a6010af5386ff0a7'
 
-ANONYMOUS_PIC = hashlib.md5(open(os.path.join(PROJECT_ROOT, "media/images/anonymous.png")).read()).hexdigest()
-ANONYMOUS_THUMB = hashlib.md5(open(os.path.join(PROJECT_ROOT, "media/images/anonymousthumb.jpg")).read()).hexdigest()
-PATH_TO_FUTUPIC = "/var/www/intra.futurice.org/futupic/"
+THUMB_SALT = '=^2~88=_]5t3/03'
 
 DEBUG = True
 TEMPLATE_DEBUG = True
-ADMINS = (
-    ('Jussi Vaihia', 'jussi.vaihia@futurice.com'),
-)
+ADMINS = ()
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -51,6 +44,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
         'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 86400,
     }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
@@ -70,22 +64,26 @@ AUTHENTICATION_BACKENDS = DEFAULT_SETTINGS.AUTHENTICATION_BACKENDS + (
 )
 ROOT_URLCONF = 'facegame.urls'
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates/'),
+    os.path.join(PROJECT_ROOT, 'facegame/templates/'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS
 INSTALLED_APPS = (
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.sites',
-        'django.contrib.messages',
-        'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.admin',
 
-        'django_extensions',
-        'facegame.faceguessing',
-        'facegame.nameguessing',
-        )
-IMAGEDIR = "/var/www/intra.futurice.org/futupic"
+    'django_extensions',
+    'django_js_utils',
+    'facegame.common',
+    'facegame.faceguessing',
+    'facegame.nameguessing',
+)
+AUTH_USER_MODEL = 'faceguessing.Player'
+
 SENTRY_TESTING = True
 SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
 SENTRY_SERVERS = ['https://sentry.futurice.com/sentry/store/']
@@ -131,3 +129,12 @@ LOGGING = {
         }
     }
 }
+
+URLS_JS_GENERATED_FILE = 'facegame/common/static/js/gen/dutils.conf.urls.js'
+URLS_JS_TO_EXPOSE = [
+'api/',
+'',
+]
+URLS_EXCLUDE_PATTERN = ['.(?P<format>[a-z0-9]+)','.(?P<format>+)','__debug__','admin',]
+URLS_BASE = ''
+URLS_DEBUG = True

@@ -1,21 +1,33 @@
 from django.conf import settings
+from django.core.cache import cache
 
 import random
 import os.path
 
-def get_random_line(filename):
-    a = open(filename).read().split("\n")
-    ret = ""
-    while len(ret) < 3:
-       ret = random.choice(a)
-    return ret
+NAMES = {
+'first_name': 'finnish_names_men',
+'last_name': 'last_names',}
+
+def get_key(name):
+    return 'names-{0}'.format(name)
+
+def get_names(name):
+    filename = NAMES[name]
+    KEY = get_key(filename)
+    result = cache.get(KEY)
+    if result is None:
+        path = os.path.join(settings.PROJECT_ROOT, 'facegame/namegen', filename)
+        result = open(path).read()
+        result = [k.strip() for k in result.split("\n") if k.strip()]
+        cache.set(KEY, result)
+    return result
+
+def get_rnd(name):
+    names = get_names(name)
+    return random.choice(names)
 
 def get_random_name():
-   first_name = get_random_line(os.path.join(os.path.dirname(__file__))+"/finnish_names_men")
-   last_name = get_random_line(os.path.join(os.path.dirname(__file__))+"/last_names")
-   username = first_name[0]+last_name[0:3]
-   return ("%s" % username.lower(), "%s %s" % (first_name, last_name))
-
-
-if __name__ == '__main__':
-   print get_random_name()
+    first_name = get_rnd('first_name')
+    last_name = get_rnd('last_name')
+    username = first_name[0:2] + last_name[0:3]
+    return ("%s" % username.lower(), "%s %s" % (first_name, last_name))

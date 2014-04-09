@@ -9,7 +9,7 @@ from django.conf import settings
 from django import forms
 
 from facegame.faceguessing.models import Player, UserStats
-from facegame.faceguessing.views import __read_fum_user
+from facegame.faceguessing.views import get_user
 
 import random
 import json
@@ -19,7 +19,7 @@ from operator import itemgetter
 
 def hall_of_fame(request):
     try:
-        player = UserStats.objects.get(username=request.user.username)
+        player = UserStats.objects.get(user=request.user)
     except:
         player = None
     print "player", player
@@ -29,15 +29,14 @@ def hall_of_fame(request):
         print "item",item
         if item.stats['highestStreak'] < 5:
             continue
-        if not item.playerid:
+        if not item.username:
             continue
         try:
-            user = __read_fum_user(item.playerid)
+            user = get_user(item.username)
         except Exception, e:
-            print e
+            print "hall_of_fame could not find user", item.username, e
             continue
         hall_of_fame.append({"highestStreak": item.stats["highestStreak"], "wrongAnswers": item.stats["wrongAnswers"], 'user': user})
-    print "HERE"
     hall_of_fame = sorted(hall_of_fame, key=itemgetter('highestStreak'))
     hall_of_fame.reverse()
     return render_to_response("hall_of_fame.html", {"player": player, 'hall_of_fame': hall_of_fame }, context_instance=RequestContext(request))
