@@ -1,5 +1,8 @@
+{% load common %}
 <p class="names">{{ correct_name_translated }}</p><br>
+
 {% for item in thumbnail_choices %}
-<img class="thumbimg" value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="{% url "image_current" %}?choice={% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}&random={{ random }}">
+    <img value="{% cycle image_hashes.0 image_hashes.1 image_hashes.2 image_hashes.3 image_hashes.4 %}" src="{% imgchoice forloop.counter0 image_hashes %}" class="thumbimg thumb_size_nameguess">
 {% endfor %}
+
 <form>{% csrf_token %}</form>

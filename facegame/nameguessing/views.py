@@ -17,13 +17,20 @@ def nameguessing(request):
     player = request.user
     return render_to_response('nameguessing.html', {'player': player}, context_instance=RequestContext(request, {}))
 
+def get_image_for_hash(path):
+    chosen_user = get_kilod(get_game_data()['users'], path, key='img_hash')
+    data = None
+    if chosen_user:
+        data = chosen_user['portrait_thumb_url']
+    return data
+
 def get_thumbnail(request):
     """returns the thumbnail picture of given person by hash, or default to request.user """
     choice = request.GET.get('choice', get_user(request.user.username)['img_hash'])
-    chosen_user = get_kilod(get_game_data()['users'], choice, key='img_hash')
     data = {}
-    if chosen_user:
-        data = {'image': chosen_user['portrait_thumb_url']}
+    img = get_image_for_hash(choice)
+    if img:
+        data = {'image': img}
     return HttpResponse(to_json(data))
 
 def json_thumbnails(request):
@@ -45,10 +52,10 @@ def json_thumbnails(request):
     image_hashes = []
     for user in player.currentRandomUsers:
         choice_hash = hash_thumb(user)
-        image_hashes.append(choice_hash)
+        if choice_hash:
+            image_hashes.append(choice_hash)
     player.save()
 
-    print player.currentRandomUsers, thumbnail_choices
     json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
     player.save()
     return HttpResponse(json.dumps({'json_thumbnails': json_thumbnails_render}), content_type='application/json')
@@ -56,7 +63,7 @@ def json_thumbnails(request):
 def check_hash(request):
     """checks the hash of the clicked image, to see if it's the correct or wrong answer"""
     player = request.user
-    userstats, created = UserStats.objects.get_or_create(user__username=player.currentCorrectUser)
+    userstats, created = UserStats.objects.get_or_create(user=player)
     correct_image_hash = hash_thumb(player.currentCorrectUser)
 
     if request.POST['answer'] == correct_image_hash:

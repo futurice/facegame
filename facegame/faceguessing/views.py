@@ -175,24 +175,24 @@ def create_form_choices(player, form):
     random.shuffle(formchoices)
     form.fields['name'].choices = formchoices
 
-def random_user(used_names, names, player):
+def random_user(used_names, names, player, limit=5, iteration_limit=100):
     """gets a set of 4 random names and 1 correct name for the player"""
     check_usednames(player)
     names_set = set(valid_usernames(names))
     used_names_set = set(valid_usernames(used_names))
     not_used = list(names_set - used_names_set)
-    
+
     rncorrect = random.choice(not_used)
 
     random_names = [rncorrect]
-    for ind in range(0, 4):
-        rn = ""
-        while rn in random_names or rn in player.usednames:
-            rn = names[random.randrange(0, len(names))]
-        if rn:
+    iterations = 0
+    while len(random_names)<limit and iterations<iteration_limit:
+        rn = names[random.randrange(0, len(names))]
+        if rn and not (rn in random_names or rn in player.usednames):
             random_names.append(rn)
+        iterations += 1
     random.shuffle(random_names)
     return random_names, rncorrect
 
 def hash_thumb(username):
-    return get_user(username)['img_hash']
+    return (get_user(username) or {}).get('img_hash', None)

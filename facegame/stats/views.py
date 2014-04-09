@@ -22,11 +22,9 @@ def hall_of_fame(request):
         player = UserStats.objects.get(user=request.user)
     except:
         player = None
-    print "player", player
     hall_of_fame_list = Player.objects.all()
     hall_of_fame = []
     for item in hall_of_fame_list:
-        print "item",item
         if item.stats['highestStreak'] < 5:
             continue
         if not item.username:
@@ -34,7 +32,6 @@ def hall_of_fame(request):
         try:
             user = get_user(item.username)
         except Exception, e:
-            print "hall_of_fame could not find user", item.username, e
             continue
         hall_of_fame.append({"highestStreak": item.stats["highestStreak"], "wrongAnswers": item.stats["wrongAnswers"], 'user': user})
     hall_of_fame = sorted(hall_of_fame, key=itemgetter('highestStreak'))

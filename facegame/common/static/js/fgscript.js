@@ -109,7 +109,7 @@ function initialize() {
         $(this).find("input[type=radio]").attr("checked", "checked");
         $('#nameform').fadeOut(600);
         $('#face').fadeOut(600, function () {
-          $(this).attr('src', '/static/img/loader.gif');
+          $(this).attr('src', STATIC_URL+'img/loader.gif');
           $(this).fadeIn(400);
         });
         $(".correctimg").animate({"width": "+=6px", "height": "+=6px"}, 300, function () {
