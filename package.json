@@ -1,0 +1,7 @@
+{
+"name": "facegame",
+"version": "1.0.0",
+"dependencies": {
+    "less" : "1.4.0"
+    }
+}
