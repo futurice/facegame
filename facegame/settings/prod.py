@@ -11,6 +11,6 @@ EMAIL_HOST = "smtpgw.futurice.com"
 EMAIL_PORT = 25
 
 STATIC_URL = '/facegame-static/'
-MEDIA_URL = '/facegame-static/'
+MEDIA_URL = '/facegame-media/'
 
 URLS_BASE = '/facegame/'
