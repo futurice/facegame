@@ -2,7 +2,7 @@ generate:
 
 - js/base.js:
     source:
-    - facegame/common/static/js/jquery.min.js
+    - facegame/common/static/js/jquery-1.11.0.js
     - facegame/common/static/js/jquery.form.js
     - facegame/common/static/js/jquery.tipsy.js
     - facegame/common/static/js/jquery.cookie.js

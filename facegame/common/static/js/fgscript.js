@@ -33,10 +33,6 @@ function new_thumbs(){
 }
 
 function initialize() {
-  if ($.browser.opera) {
-    $('#output').fadeIn(700);
-    $('#nameform').attr("disabled", false);
-  }
   $('#face').load(function () {
     $('#output').fadeIn(700);
     $('#nameform').attr("disabled", false);
