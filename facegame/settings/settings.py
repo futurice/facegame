@@ -3,7 +3,7 @@ import os, hashlib, datetime, copy
 
 PACKAGE_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PROJECT_ROOT = os.path.normpath(PACKAGE_ROOT)
-DEPLOYMENT_ROOT = PROJECT_ROOT
+DEPLOY_ROOT = PROJECT_ROOT
 
 FUM_API_URL = 'https://api.fum.futurice.com/v1/'
 FUM_API_TOKEN = 'a216c36d4bf3ea59fd802388a6010af5386ff0a7'

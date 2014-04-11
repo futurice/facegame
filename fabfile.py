@@ -74,7 +74,7 @@ def ownership():
 
 @task
 def dirs():
-    sudo('mkdir -p {basepath} {basepath}/packages {basepath}/releases {basepath}/media {basepath}/dist'.format(**env))
+    sudo('mkdir -p {basepath} {basepath}/packages {basepath}/releases {basepath}/media {basepath}/dist {basepath}/static'.format(**env))
 
     # backups
     sudo('mkdir -p /srv/backup/postgres'.format(**env))
