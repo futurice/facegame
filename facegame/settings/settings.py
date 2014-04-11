@@ -67,6 +67,10 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'facegame/templates/'),
 )
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS  = (
+    ('facegame.common.context_processors.settings_to_context',
+    'django.core.context_processors.request',
+    )+TEMPLATE_CONTEXT_PROCESSORS)
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

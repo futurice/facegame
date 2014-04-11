@@ -3,7 +3,7 @@ from fabric.api import cd, env, local, run, sudo, task, put, hide
 from fabric.context_managers import prefix, settings
 from fabric.contrib.files import append
 from fabric.operations import prompt
-import os, re, tempfile, time
+import os, re, tempfile, time, copy
 import subprocess, json
 
 #from helpers.models_to_forms import jsmodels
@@ -130,7 +130,7 @@ def reset_and_sync():
 def prepare_assets():
     with virtualenv():
         with cd(env.project_root):
-            sudo('assetgen --profile prod assetgen.yaml --force && cp -r {usedir}static/* {basepath}/static/')
+            sudo('assetgen --profile prod assetgen.yaml --force && cp -r {usedir}static/* {basepath}/static/'.format(**env))
     manage('collectstatic --noinput')
 
 @task
