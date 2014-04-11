@@ -1,4 +1,3 @@
-"""view for the faceguessing game"""
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
@@ -34,17 +33,17 @@ def jsonform(request):
     names = get_all_names()
     form = create_form(player, names)
     rand_choice = player.currentCorrectUser
-    jsonform_render = render_to_string('form.html', {
+    context = RequestContext(request, {
         'form': form,
         'player': player,
         'choice': get_user(rand_choice)['portrait_thumb_url'],
-        'random': random.randint(1, 10000000)},
-        context_instance=RequestContext(request))
+        'random': random.randint(1, 10000000),
+        })
+    jsonform_render = render_to_string('form.html', context_instance=context)
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
 
 def updatestats(request):
     """updates stats when something is clicked, i.e. wrong or correct answer"""
-    # correct choice check hash(username)==hash
     player = request.user
     userstats, created = UserStats.objects.get_or_create(user=player)
     if request.POST['answer'] == player.currentCorrectUser:

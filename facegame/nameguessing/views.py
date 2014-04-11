@@ -57,7 +57,8 @@ def json_thumbnails(request):
             image_hashes.append(choice_hash)
     player.save()
 
-    json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request))
+    context = RequestContext(request, {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)})
+    json_thumbnails_render = render_to_string('thumbnails.html', context_instance=context)
     player.save()
     return HttpResponse(json.dumps({'json_thumbnails': json_thumbnails_render}), content_type='application/json')
 

@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.core.context_processors import csrf
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
