@@ -8,6 +8,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django import forms
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.template.defaulttags import csrf_token
 
 from models import Player, UserStats
 from facegame.namegen.gen import get_random_name
@@ -37,7 +39,7 @@ def jsonform(request):
         'player': player,
         'choice': get_user(rand_choice)['portrait_thumb_url'],
         'random': random.randint(1, 10000000)},
-        context_instance=RequestContext(request, {}))
+        context_instance=RequestContext(request))
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
 
 def updatestats(request):
@@ -82,12 +84,11 @@ def index(request):
     names = request.session.setdefault('names', get_all_names())
     form = create_form(player, names)
     rand_choice = player.currentCorrectUser
-    return render_to_response('template.html',{
+    return render(request, 'template.html', {
         'form': form,
         'player': player,
         'choice': get_user(rand_choice)['portrait_thumb_url'],
-        },
-        context_instance=RequestContext(request, {}))
+        })
 
 def get_all_names():
     return [k['username'] for k in get_game_data()['users']]

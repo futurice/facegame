@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.shortcuts import render
 
 from facegame.faceguessing.models import Player, UserStats
 from facegame.faceguessing.views import get_user, get_all_names, check_usednames, random_user, hash_thumb, get_kilod, get_game_data
@@ -15,7 +16,7 @@ import os
 
 def nameguessing(request):
     player = request.user
-    return render_to_response('nameguessing.html', {'player': player}, context_instance=RequestContext(request, {}))
+    return render(request, 'nameguessing.html', {'player': player})
 
 def get_image_for_hash(path):
     chosen_user = get_kilod(get_game_data()['users'], path, key='img_hash')
@@ -56,7 +57,7 @@ def json_thumbnails(request):
             image_hashes.append(choice_hash)
     player.save()
 
-    json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request, {}))
+    json_thumbnails_render = render_to_string('thumbnails.html', {'thumbnail_choices': thumbnail_choices, 'player': player, 'image_hashes': image_hashes, 'correct_name_translated': correct_name_translated, 'random': random.randint(1, 10000000)}, context_instance=RequestContext(request))
     player.save()
     return HttpResponse(json.dumps({'json_thumbnails': json_thumbnails_render}), content_type='application/json')
 
