@@ -5,6 +5,8 @@ generate:
     - facegame/common/static/js/jquery.min.js
     - facegame/common/static/js/jquery.form.js
     - facegame/common/static/js/jquery.tipsy.js
+    - facegame/common/static/js/jquery.cookie.js
+    - facegame/common/static/js/utils.js
     - facegame/common/static/js/dutils.js
     - facegame/common/static/js/gen/dutils.conf.urls.js
     - facegame/common/static/js/fgscript.js
@@ -16,7 +18,7 @@ generate:
     - facegame/common/static/css/tipsy.css
     - facegame/common/static/css/fgstyle.css
 
-output.directory: media
+output.directory: static
 output.hashed: true
 output.manifest: assets.json
 

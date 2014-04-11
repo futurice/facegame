@@ -61,7 +61,7 @@ function initialize() {
   $('.thumbimg').click(function (event) {
     $(this).unbind('click');
     var answer = $(this).attr("value");
-    $.post(url('name_updatestats')+'?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
+    $.post(url('name_updatestats')+'?ajax=true&random='+Math.random(), {answer: answer}, function (data) {
       $('#correctnum').html(data.correctAnswers);
       $('#wrongnum').html(data.wrongAnswers);
       $('#rownum').html(data.currentStreak + ", " + data.highestStreak);
@@ -96,7 +96,7 @@ function initialize() {
   $('li').click(function (event) {
     $(this).unbind('click');
     var answer = $(this).find("input[type=radio]").val();
-    $.post(url('updatestats')+'?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
+    $.post(url('updatestats')+'?ajax=true&random='+Math.random(), {answer: answer}, function (data) {
       $('#correctnum').html(data.correctAnswers);
       $('#wrongnum').html(data.wrongAnswers);
       $('#rownum').html(data.currentStreak + ", " + data.highestStreak);
@@ -175,7 +175,7 @@ function deteleconfirm() {
   var confirmanswer = confirm("You are about to reset your stats. Are you sure?");
   if (confirmanswer) {
     var answer = "RESET";
-    $.post(url('updatestats')+'?ajax=true&random='+Math.random(), {csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(), 'answer': answer}, function (data) {
+    $.post(url('updatestats')+'?ajax=true&random='+Math.random(), {answer: answer}, function (data) {
       $('#correctnum').html(data.correctAnswers);
       $('#wrongnum').html(data.wrongAnswers);
       $('#rownum').html(data.currentStreak + ", " + data.highestStreak);
