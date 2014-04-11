@@ -16,10 +16,15 @@ generate:
     - facegame/common/static/css/tipsy.css
     - facegame/common/static/css/fgstyle.css
 
-output.directory: static
+output.directory: media
 output.hashed: true
 output.manifest: assets.json
 
 profile.dev:
     css.compress: false
     js.compress: false
+
+profile.prod:
+    css.compress: false
+    js.compress: false
+    output.directory: static

@@ -24,6 +24,8 @@ env.pkg = '/tmp/{release}.tar.gz'.format(**env)
 env.apache_restart_command = 'service apache2 restart'
 env.basepath = '{www_root}/{project}'.format(**env)
 env.project_root = '{www_root}/{project}/www'.format(**env)
+env.reldir = '{basepath}/releases/{release}/'.format(**env)
+env.usedir = copy.deepcopy(env.reldir)
 env.python_packages_dir = '{www_root}/{project}/dist'.format(**env)
 env.virtualenv = '{www_root}/{project}/venv'.format(**env)
 env.supervisor_conf_dir = '/etc/supervisor'
@@ -128,7 +130,7 @@ def reset_and_sync():
 def prepare_assets():
     with virtualenv():
         with cd(env.project_root):
-            sudo('assetgen --profile dev assetgen.yaml --force')
+            sudo('assetgen --profile prod assetgen.yaml --force && cp -r {usedir}static/* {basepath}/static/')
     manage('collectstatic --noinput')
 
 @task
