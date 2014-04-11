@@ -16,6 +16,6 @@ MEDIA_URL = '/facegame-media/'
 # PROJECT_ROOT -> DEPLOY_ROOT
 MEDIA_ROOT = os.path.join(DEPLOY_ROOT, 'media') + os.sep
 STATIC_ROOT = os.path.join(DEPLOY_ROOT, 'static') + os.sep
-DATABASES['default']['NAME'] = os.path.abspath(os.path.join(DEPLOY_ROOT, 'sqlite.db')),
+DATABASES['default']['NAME'] = os.path.abspath(os.path.join(DEPLOY_ROOT, 'sqlite.db'))
 
 URLS_BASE = '/facegame/'
