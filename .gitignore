@@ -5,4 +5,4 @@
 env_settings.py
 media/futupic/
 venv/
-static/
+/static/
