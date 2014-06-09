@@ -105,7 +105,7 @@ def setup():
 @task
 def prepare_hidden_files():
     with settings(hide('warnings',), warn_only=True):
-        sudo('cp {basepath}/secret_facegame_settings.py {project_root}/'.format(**env))
+        sudo('cp {basepath}/secret_facegame_settings.py {project_root}/facegame/settings/'.format(**env))
 
 # @task
 # def check():
