@@ -5,10 +5,10 @@ PACKAGE_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '.
 PROJECT_ROOT = os.path.normpath(PACKAGE_ROOT)
 DEPLOY_ROOT = PROJECT_ROOT
 
-FUM_API_URL = 'https://api.fum.futurice.com/v1/'
-FUM_API_TOKEN = 'a216c36d4bf3ea59fd802388a6010af5386ff0a7'
+FUM_API_URL = ''
+FUM_API_TOKEN = ''
 
-THUMB_SALT = '=^2~88=_]5t3/03'
+THUMB_SALT = ''
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -39,7 +39,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = '{PROJECT_ROOT}/static/'.format(**locals())
 STATIC_URL = '/static/'
 
-SECRET_KEY = ')&$k692@_8z5d$3py^^9nddc5ln$3j0(8z%w98%23v=kuec25!'
+SECRET_KEY = ''
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -90,8 +90,8 @@ INSTALLED_APPS = (
 AUTH_USER_MODEL = 'faceguessing.Player'
 
 SENTRY_TESTING = True
-SENTRY_KEY = 'js52wjdsoisr78fgs1f0g415safg1'
-SENTRY_SERVERS = ['https://sentry.futurice.com/sentry/store/']
+SENTRY_KEY = ''
+SENTRY_SERVERS = []
 
 LOGGING = {
     'version': 1,
@@ -143,3 +143,6 @@ URLS_JS_TO_EXPOSE = [
 URLS_EXCLUDE_PATTERN = ['.(?P<format>[a-z0-9]+)','.(?P<format>+)','__debug__','admin',]
 URLS_BASE = ''
 URLS_DEBUG = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.DummyBackend'
+

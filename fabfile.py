@@ -62,7 +62,7 @@ def deploy():
     #manage('migrate --noinput')
     manage('syncdb --noinput')
 
-    # prepare_hidden_files()
+    prepare_hidden_files()
     ownership()
 
     restart_apache()
@@ -98,13 +98,14 @@ def setup():
 
     prepare_node_packages()
     prepare_assets()
-    # prepare_hidden_files()
+    prepare_hidden_files()
 
     restart_apache()
 
-# @task
-# def prepare_hidden_files():
-#     sudo('cp /root/local_settings.py {project_root}/'.format(**env))
+@task
+def prepare_hidden_files():
+    with settings(hide('warnings',), warn_only=True):
+        sudo('cp {basepath}/secret_facegame_settings.py {project_root}/'.format(**env))
 
 # @task
 # def check():

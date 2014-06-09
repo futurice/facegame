@@ -1,13 +1,8 @@
 from settings import *
 
-ADMINS = (
-    ('Jussi Vaihia', 'jussi.vaihia@futurice.com'),
-)
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = "smtpgw.futurice.com"
 EMAIL_PORT = 25
 
 STATIC_URL = '/facegame-static/'
@@ -24,3 +19,8 @@ STATIC_ROOT = os.path.join(DEPLOY_ROOT, 'static') + os.sep
 DATABASES['default']['NAME'] = os.path.abspath(os.path.join(DEPLOY_ROOT, 'sqlite.db'))
 
 URLS_BASE = '/facegame/'
+
+try:
+    from secret_facegame_settings import *
+except ImportError:
+    print "no secret production settings"
