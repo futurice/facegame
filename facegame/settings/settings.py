@@ -146,3 +146,7 @@ URLS_DEBUG = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.DummyBackend'
 
+try:
+    from local_settings import *
+except ImportError:
+    pass
