@@ -1,0 +1,22 @@
+{
+	"users": [
+		{
+		"username": "test",
+		"first_name": "Anonymous",
+		"last_name": "Person",
+		"portrait_thumb_url": "/static/img/anonymous.png"
+		},
+		{
+			"username": "test2",
+			"first_name": "Anonymous",
+			"last_name": "Person 2",
+			"portrait_thumb_url": "/static/img/anonymous.png"
+		},
+		{
+			"username": "test3",
+			"first_name": "Anonymous",
+			"last_name": "Person 3",
+			"portrait_thumb_url": "/static/img/anonymous.png"
+		}
+	]
+}

@@ -125,6 +125,17 @@ def check_usednames(player):
         player.usednames = [player.username]
         player.save()
 
+    """ If FUM is not used, resets settings when half of the users are guessed. """
+    if not settings.FUM_API_URL:
+        try:
+            user_data = get_users()
+            if page.count > (len(user_data) / 2):
+                player.usednames = [player.username]
+                player.save()
+        except IOError:
+            player.usednames = [player.username]
+            player.save()
+
 def get_comparison_hash(name):
     return hashlib.md5(settings.THUMB_SALT + name).hexdigest()
 
@@ -141,22 +152,31 @@ def get_game_data():
     return GAME_DATA
 
 def get_users():
-    """ Get users that have a thumbnail portrait of themselves """
-    groups = ['Futurice', 'External']
-    KEY = 'fum-users'
-    result = cache.get(KEY)
-    if result is None:
-        usernames = []
-        for group in groups:
-            usernames += get_api().groups(group).get().get('users')
-        usernames = list(set(usernames))
-        result = []
-        for username in usernames:
-            user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
-            if 'thumb' in user.get('portrait_thumb_url'):
-                result.append(user)
-        cache.set(KEY, result)
-    return result
+    if settings.FUM_API_URL:
+        """ Get users that have a thumbnail portrait of themselves """
+        groups = ['Futurice', 'External']
+        KEY = 'fum-users'
+        result = cache.get(KEY)
+        if result is None:
+            usernames = []
+            for group in groups:
+                usernames += get_api().groups(group).get().get('users')
+            usernames = list(set(usernames))
+            result = []
+            for username in usernames:
+                user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
+                if 'thumb' in user.get('portrait_thumb_url'):
+                    result.append(user)
+            cache.set(KEY, result)
+        return result
+    else: # Show test data from the provided file
+        try:
+            json_data = open(settings.USER_DATA)
+            user_data = json.load(json_data)
+            result = user_data['users']
+            return result
+        except IOError:
+            return []
 
 def get_kilod(l, value, key='username'):
     """ get key in list of dictionaries """

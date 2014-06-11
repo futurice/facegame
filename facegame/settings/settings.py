@@ -15,6 +15,8 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
 
+USER_DATA = 'test_data.json'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
