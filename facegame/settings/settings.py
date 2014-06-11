@@ -15,6 +15,8 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
 
+USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -146,3 +148,7 @@ URLS_DEBUG = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.DummyBackend'
 
+try:
+    from local_settings import *
+except ImportError:
+    pass
