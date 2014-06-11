@@ -13,7 +13,7 @@ xdisplay: none;
 .names {
 font-family: arial;
 font-size: 30px;
-line-height: 75px;
+line-height: 55px;
 }
 
 .logotxt {
@@ -52,4 +52,15 @@ border: 1px solid gray;
 
 .thumb_size_nameguess {
     width: 150px;
+}
+
+#footer {
+	padding-top: 20px;
+	height: 80px;
+	text-align: center;
+	color: #a3a29c;
+}
+
+#footer a {
+	color: #4c9018;
 }
