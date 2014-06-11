@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     {% assets 'css/base.css' %}
 
     {% block header %}
     {% endblock %}
 
-	<title>Futufaces</title>
+	<title>Facegame</title>
 </head>
 <body>
 {% block body %}
@@ -20,6 +21,14 @@ var STATIC_URL='{{STATIC_URL}}';
 </script>
 
 {% assets 'js/base.js' %}
+
+{% block footer %}
+
+<div class="footer navbar-fixed-bottom" id="footer">
+	<h6>Facegame is made by <a href="http://www.futurice.com/">Futurice</a>, a software design and development consultancy based in Finland, Germany and the UK.</h6>
+</div>
+
+{% endblock %}
 
 </body>
 </html>
