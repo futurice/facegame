@@ -15,7 +15,7 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
 
-USER_DATA = 'test_data.json'
+USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
 
 DATABASES = {
     'default': {
