@@ -2,6 +2,8 @@
 "name": "facegame",
 "version": "1.0.0",
 "dependencies": {
-    "less" : "1.4.0"
+    "less" : "1.4.0",
+    "phantomjs": "1.9",
+    "casperjs": "1.1"
     }
 }
