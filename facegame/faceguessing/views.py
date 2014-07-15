@@ -20,15 +20,15 @@ import hashlib
 import os
 
 class NameForm(forms.Form):
-    """class for the form"""
-    name = forms.ChoiceField(widget = forms.RadioSelect)
+    name = forms.ChoiceField(widget=forms.RadioSelect)
 
 def get_user_image(request):
+    """ Returns JSON with URL to user face image """
     data = {'image': get_user(request.user.username)['portrait_thumb_url']}
     return to_json(data)
 
 def jsonform(request):
-    """returns a new form in json"""
+    """ Returns a new form in json"""
     player = request.user
     names = get_all_names()
     form = create_form(player, names)
@@ -43,9 +43,9 @@ def jsonform(request):
     return HttpResponse(json.dumps({'jsonform': jsonform_render}), content_type='application/json')
 
 def updatestats(request):
-    """updates stats when something is clicked, i.e. wrong or correct answer"""
+    """ Updates stats when something is clicked, i.e. wrong or correct answer"""
     player = request.user
-    userstats, created = UserStats.objects.get_or_create(user=player)
+    userstats, _ = UserStats.objects.get_or_create(user=player)
     if request.POST['answer'] == player.currentCorrectUser:
         userstats.success += 1
         if player.first_attempt:
@@ -76,7 +76,7 @@ def updatestats(request):
     highestStreak = player.stats['highestStreak']
     player.save()
     userstats.save()
-    return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak }), content_type='application/json')
+    return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak}), content_type='application/json')
 
 def index(request):
     player = request.user
@@ -93,7 +93,7 @@ def get_all_names():
     return [k['username'] for k in get_game_data()['users']]
 
 def create_form(player, names):
-    """creates the form with names"""
+    """ Creates the form with a single face and multiple names """
     form = NameForm()
     randomusers, currentcorrect = random_user(player.usednames, names, player)
     player.currentRandomUsers = randomusers
@@ -121,11 +121,11 @@ def check_usednames(player):
             player.usednames.pop(player.usednames.index(username))
 
     page = Paginator(player.usednames, 1)
-    if page.count>75:
+    if page.count > 75:
         player.usednames = [player.username]
         player.save()
 
-    """ If FUM is not used, resets settings when half of the users are guessed. """
+    # If FUM is not used, resets settings when half of the users are guessed.
     if not settings.FUM_API_URL:
         try:
             user_data = get_users()
@@ -169,7 +169,8 @@ def get_users():
                     result.append(user)
             cache.set(KEY, result)
         return result
-    else: # Show test data from the provided file
+    else:
+        # Show test data from the provided file
         try:
             json_data = open(settings.USER_DATA)
             user_data = json.load(json_data)
@@ -180,7 +181,7 @@ def get_users():
 
 def get_kilod(l, value, key='username'):
     """ get key in list of dictionaries """
-    r = [k for k in l if k[key]==value]
+    r = [k for k in l if k[key] == value]
     return r[0] if r else None
 
 def get_user(username):
@@ -206,7 +207,7 @@ def random_user(used_names, names, player, limit=5, iteration_limit=100):
 
     random_names = [rncorrect]
     iterations = 0
-    while len(random_names)<limit and iterations<iteration_limit:
+    while len(random_names) < limit and iterations < iteration_limit:
         rn = names[random.randrange(0, len(names))]
         if rn and not (rn in random_names or rn in player.usednames):
             random_names.append(rn)
