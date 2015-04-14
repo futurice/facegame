@@ -22,6 +22,8 @@ import os
 class NameForm(forms.Form):
     name = forms.ChoiceField(widget=forms.RadioSelect)
 
+groups = ['tampere', 'berlin', 'helsinki', 'london', 'lausanne']
+
 def get_user_image(request):
     """ Returns JSON with URL to user face image """
     data = {'image': get_user(request.user.username)['portrait_thumb_url']}
@@ -30,7 +32,7 @@ def get_user_image(request):
 def jsonform(request):
     """ Returns a new form in json"""
     player = request.user
-    names = get_all_names()
+    names = get_names_in_groups(player)
     form = create_form(player, names)
     rand_choice = player.currentCorrectUser
     context = RequestContext(request, {
@@ -78,9 +80,19 @@ def updatestats(request):
     userstats.save()
     return HttpResponse(json.dumps({'valid': valid, 'correctAnswers': correctAnswers, 'wrongAnswers': wrongAnswers, 'skips': skips, 'currentStreak': currentStreak, 'highestStreak': highestStreak}), content_type='application/json')
 
+def updatesites(request):
+    """ Updates selected sites """
+    player = request.user
+    sites = request.POST.getlist('sites[]')
+    player.selectedGroups = sites
+    player.save()
+    return HttpResponse(json.dumps({'groups': player.selectedGroups}))
+
 def index(request):
     player = request.user
-    names = request.session.setdefault('names', get_all_names())
+    player.selectedGroups = groups
+    player.save()
+    names = request.session.setdefault('names', get_names_in_groups(player))
     form = create_form(player, names)
     rand_choice = player.currentCorrectUser
     return render(request, 'template.html', {
@@ -89,7 +101,18 @@ def index(request):
         'choice': get_user(rand_choice)['portrait_thumb_url'],
         })
 
+def get_names_in_groups(player):
+    """ Get names of all users in currently selected groups """
+    allgroups = get_game_data()['groups']
+    names = []
+    for group in allgroups:
+        if group['name'] in player.selectedGroups:
+            for user in group['users']:
+                names.append(user['username'])
+    return names
+
 def get_all_names():
+    """ Get names of all users """
     return [k['username'] for k in get_game_data()['users']]
 
 def create_form(player, names):
@@ -103,25 +126,26 @@ def create_form(player, names):
     create_form_choices(player, form)
     return form
 
-def is_valid_username(name):
-    return name in get_all_names()
+def is_valid_username(name, player):
+    return name in get_names_in_groups(player)
 
-def valid_usernames(l):
+def valid_usernames(l, player):
     rs = []
     for username in l:
-        if is_valid_username(username):
+        if is_valid_username(username, player):
             rs.append(username)
     return rs
 
+#todo: better way to determine when to reset, now broken
 def check_usednames(player):
     """checks if usednames are x high, and if so, resets them"""
     # 'usednames' might not contain valid users anymore
     for username in player.usednames:
-        if not is_valid_username(username):
+        if not is_valid_username(username, player):
             player.usednames.pop(player.usednames.index(username))
 
     page = Paginator(player.usednames, 1)
-    if page.count > 75:
+    if page.count > len(get_names_in_groups(player))*0.75:
         player.usednames = [player.username]
         player.save()
 
@@ -143,18 +167,19 @@ GAME_DATA = None
 def get_game_data():
     global GAME_DATA
     if GAME_DATA is None:
-        data = {'users': []}
+        data = {'users': [], 'groups': []}
         users = get_users()
         for user in users:
             user['img_hash'] = get_comparison_hash(user['portrait_thumb_url'])
         data['users'] = users
+        data['groups'] = get_users_in_groups()
         GAME_DATA = data
+
     return GAME_DATA
 
 def get_users():
     if settings.FUM_API_URL:
         """ Get users that have a thumbnail portrait of themselves """
-        groups = ['Futurice', 'External']
         KEY = 'fum-users'
         result = cache.get(KEY)
         if result is None:
@@ -169,6 +194,30 @@ def get_users():
                     result.append(user)
             cache.set(KEY, result)
         return result
+    else:
+        # Show test data from the provided file
+        try:
+            json_data = open(settings.USER_DATA)
+            user_data = json.load(json_data)
+            result = user_data['users']
+            return result
+        except IOError:
+            return []
+
+def get_users_in_groups():
+    """ Get users that have a thumbnail portrait of themselves, in groups """
+    if settings.FUM_API_URL:
+        usergroups = []
+        for group in groups:
+            usergroup = []
+            usernames = get_api().groups(group).get().get('users')
+            for username in usernames:
+                user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
+                if 'thumb' in user.get('portrait_thumb_url'):
+                    user['img_hash'] = get_comparison_hash(user['portrait_thumb_url'])
+                    usergroup.append(user)
+            usergroups.append({'name':group, 'users':usergroup})
+        return usergroups
     else:
         # Show test data from the provided file
         try:
@@ -199,14 +248,16 @@ def create_form_choices(player, form):
 def random_user(used_names, names, player, limit=5, iteration_limit=100):
     """gets a set of 4 random names and 1 correct name for the player"""
     check_usednames(player)
-    names_set = set(valid_usernames(names))
-    used_names_set = set(valid_usernames(used_names))
+    names_set = set(valid_usernames(names, player))
+    used_names_set = set(valid_usernames(used_names, player))
     not_used = list(names_set - used_names_set)
 
     rncorrect = random.choice(not_used)
 
     random_names = [rncorrect]
     iterations = 0
+    names = get_all_names()
+
     while len(random_names) < limit and iterations < iteration_limit:
         rn = names[random.randrange(0, len(names))]
         if rn and not (rn in random_names or rn in player.usednames):

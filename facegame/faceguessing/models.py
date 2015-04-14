@@ -47,6 +47,7 @@ class PickledObjectField(models.Field):
 
 
 class Player(AbstractUser):
+    selectedGroups = PickledObjectField()
     usednames = PickledObjectField() #list of known usernames
     currentRandomUsers = PickledObjectField()
     currentCorrectUser = models.CharField(max_length=5)
@@ -58,6 +59,7 @@ class Player(AbstractUser):
         if not self.pk:
             self.currentCorrectUser = ''
             self.currentRandomUsers = []
+            self.selectedGroups = []
             self.usednames = [self.username]
             self.stats = {'correctAnswers': 0, 'wrongAnswers': 0, 'currentStreak': 0, 'highestStreak': 0, 'skips': 0}
         super(Player, self).save(*args, **kwargs)

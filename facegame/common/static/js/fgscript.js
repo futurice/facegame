@@ -134,6 +134,8 @@ function initialize() {
     return false;
 
   });
+
+  $(".siteChoice").attr("checked", true);
 }
 
 $(document).ready(function () {
@@ -165,7 +167,43 @@ $(document).ready(function () {
   $('.switchimg').tipsy();
 
   new_thumbs();
+
+  $(".siteChoice").on("click", function() {
+    $(this).next().find('.glyphicon').toggleClass('active');
+    if ($(':checked').size() == 0) {
+      $('#updatebutton').prop('disabled', true);
+    } else {
+      $('#updatebutton').prop('disabled', false);
+    }
+    
+  });
 });
+
+function updatesites() {
+  var checked = [];
+  $(':checked').each(function(idx, item) {
+    checked.push(item.name);
+  });
+  $.post(url('updatesites')+'?ajax=true&random='+Math.random(), {sites: checked}, function (data) {
+    if (window.location.pathname === '/name/') {
+      $.get(url('json_thumbnails')+'?ajax=true&random='+Math.random(), function (data) {
+        $('#thumbnails').hide();
+        $('#thumbnails').html(data.json_thumbnails);
+        $('#thumbnails').fadeIn(400);
+        initialize();
+      });
+    } else {
+      $.get(url('jsonform')+'?ajax=true&random='+Math.random(), function (form) {
+        $('#face').fadeOut(400);
+        $('#output').css("display", "none");
+        $('#output').html(form.jsonform);
+        rnCheck();
+        initialize();
+      });
+    }
+    return false;
+  });
+}
 
 function deteleconfirm() {
   var confirmanswer = confirm("You are about to reset your stats. Are you sure?");

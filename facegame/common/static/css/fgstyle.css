@@ -1,3 +1,41 @@
+span.btn {
+  padding: 4px;
+  margin-right: 6px;
+}
+
+span.glyphicon {         
+opacity: 0;       
+}
+span.glyphicon.active {        
+opacity: 1;       
+}
+
+input[type="checkbox"] {
+display: none;
+}
+
+#siteChoices {
+width: 340px;
+margin-left: auto;
+margin-right: auto;
+}
+
+#siteChoices label {
+font-family: arial;
+font-size: 17px;
+}
+
+#updatebutton {
+display: block;
+width: 80px;
+margin-left: auto;
+margin-right: auto;
+}
+
+label.checkbox-inline {
+width: 140px;
+}
+
 ul {
 list-style: none;
 }

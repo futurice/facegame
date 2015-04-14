@@ -14,6 +14,33 @@
 {% block body %}
 {% endblock %}
 
+{% block sitechoice %}
+<div id="siteChoices" class="well">
+  <div>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="berlin" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Berlin
+    </label>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="helsinki" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Helsinki
+    </label>
+  </div>
+  <div>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="lausanne" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Lausanne
+    </label>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="london" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>London
+    </label>
+  </div>
+  <div>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="tampere" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Tampere
+    </label>
+  </div>
+  <button class="btn btn-primary" id="updatebutton" onclick="updatesites()">Päivitä</button>
+</div>
+{% endblock %}
+
 <script type="text/javascript">
 try { console.assert(1); } catch(e) { console = { log: function() {}, assert: function() {} } }
 var URLS_BASE='{{settings.URLS_BASE}}';
