@@ -18,5 +18,11 @@
 			"last_name": "Person 3",
 			"portrait_thumb_url": "/static/img/anonymous.png"
 		}
-	]
+	],
+  "groups": [
+    {
+      "name": "testgroup",
+      "users": []
+    }
+  ]
 }

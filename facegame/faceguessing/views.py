@@ -89,6 +89,15 @@ def updatesites(request):
     return HttpResponse(json.dumps({'groups': player.selectedGroups}))
 
 def index(request):
+    if not settings.FUM_API_URL:
+        global groups
+        try:
+            json_data = open(settings.USER_DATA)
+            user_data = json.load(json_data)
+            groups = user_data['groups'][0]['name']
+        except IOError:
+            return []
+
     player = request.user
     player.selectedGroups = groups
     player.save()
@@ -136,7 +145,6 @@ def valid_usernames(l, player):
             rs.append(username)
     return rs
 
-#todo: better way to determine when to reset, now broken
 def check_usednames(player):
     """checks if usednames are x high, and if so, resets them"""
     # 'usednames' might not contain valid users anymore
@@ -223,7 +231,8 @@ def get_users_in_groups():
         try:
             json_data = open(settings.USER_DATA)
             user_data = json.load(json_data)
-            result = user_data['users']
+            result = user_data['groups']
+            result[0]['users'] = get_users()
             return result
         except IOError:
             return []
