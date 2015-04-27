@@ -1,91 +1,91 @@
 span.btn {
-  padding: 4px;
-  margin-right: 6px;
+    padding: 4px;
+    margin-right: 6px;
 }
 
 span.glyphicon {         
-opacity: 0;       
+    opacity: 0;       
 }
 span.glyphicon.active {        
-opacity: 1;       
+    opacity: 1;       
 }
 
 input[type="checkbox"] {
-display: none;
+    display: none;
 }
 
 #siteChoices {
-width: 340px;
-margin-left: auto;
-margin-right: auto;
+    width: 340px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #siteChoices label {
-font-family: arial;
-font-size: 17px;
+    font-family: arial;
+    font-size: 17px;
 }
 
 #updatebutton {
-display: block;
-width: 80px;
-margin-left: auto;
-margin-right: auto;
+    display: block;
+    width: 80px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 label.checkbox-inline {
-width: 140px;
+    width: 140px;
 }
 
 ul {
-list-style: none;
+    list-style: none;
 }
 
 label {
-padding: 10px;
+    padding: 10px;
 }
 
 input[type="radio"] {
-xdisplay: none;
-visibility: hidden;
+    xdisplay: none;
+    visibility: hidden;
 }
 
 .names {
-font-family: arial;
-font-size: 30px;
-line-height: 55px;
+    font-family: arial;
+    font-size: 30px;
+    line-height: 55px;
 }
 
 .logotxt {
-text-align: center;
-font-family: arial;
-font-size: 31px;
-color: #7F7B67;
-line-height: 0%;
-margin-top: 40px;
-padding-bottom: 10px;
+    text-align: center;
+    font-family: arial;
+    font-size: 31px;
+    color: #7F7B67;
+    line-height: 0%;
+    margin-top: 40px;
+    padding-bottom: 10px;
 }
 
 .scoretxt {
-font-family: arial;
-font-size: 17px;
-color: #7F7B67;
+    font-family: arial;
+    font-size: 17px;
+    color: #7F7B67;
 }
 
 .correctimg, .wrongimg, .rowimg, .muteimg, .resetimg, .switchimg {
-vertical-align: middle;
+    vertical-align: middle;
 }
 
 #output {
-xdisplay: none;
+    xdisplay: none;
 }
 
 #thumbnails {
-margin-left: auto;
-margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .thumbimg {
-border: 1px solid gray;
+    border: 1px solid gray;
 }
 
 .thumb_size {
