@@ -6,7 +6,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from facegame.faceguessing.models import Player, UserStats
-from facegame.faceguessing.views import get_user, get_all_names, check_usednames, random_user, hash_thumb, get_kilod, get_game_data
+from facegame.faceguessing.views import get_user, get_names_in_groups, check_usednames, random_user, hash_thumb, get_kilod, get_game_data, groups
 from facegame.common.helpers import to_json
 
 import random
@@ -16,6 +16,8 @@ import os
 
 def nameguessing(request):
     player = request.user
+    player.selectedGroups = groups
+    player.save()
     return render(request, 'nameguessing.html', {'player': player})
 
 def get_image_for_hash(path):
@@ -37,7 +39,7 @@ def get_thumbnail(request):
 def json_thumbnails(request):
     """renders a new set of thumbnails to the game"""
     player = request.user
-    names = request.session.setdefault('names', get_all_names())
+    names = request.session.setdefault('names', get_names_in_groups(player))
 
     randomusers, currentcorrect = random_user(player.usednames, names, player)
     player.currentRandomUsers = randomusers
