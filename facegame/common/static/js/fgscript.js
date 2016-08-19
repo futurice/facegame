@@ -2,8 +2,8 @@ var mute = true;
 
 jQuery.preloadImages = function () {
   for (i = 0; i < arguments.length; i++) {
-    jQuery('<img>').attr('src', arguments[i]);   
-  } 
+    jQuery('<img>').attr('src', arguments[i]);
+  }
 };
 
 function rnCheck() {
@@ -17,9 +17,9 @@ function new_thumbs(){
   });
 
   $('#thumbnails').fadeOut(600, function () {
-    $('#thumbnails').html('<p><img id='loader' src="'+STATIC_URL+'img/loader.gif"></p>');
+    $('#thumbnails').html('<p><img id="loader" src="'+STATIC_URL+'img/loader.gif"></p>');
     $('#thumbnails').fadeIn(400);
-    $.get(url('json_thumbnails')+'?ajax=true&random='+Math.random(), function (data) {
+    $.get(url('json_thumbnails') + '?ajax=true&random='+Math.random(), function (data) {
       $('#thumbnails').hide();
       $('#thumbnails').html(data.json_thumbnails);
       $('#thumbnails').fadeIn(400);
@@ -67,7 +67,7 @@ function initialize() {
           soundHandle1.play();
         }
         $('.correctimg').animate({'width': '+=6px', 'height': '+=6px'}, 300, function () {
-          $('.correctimg').animate({'width': '-=6px', 'height': '-=6px'}, 350);					
+          $('.correctimg').animate({'width': '-=6px', 'height': '-=6px'}, 350);
         });
         new_thumbs();
         return false;
@@ -109,7 +109,7 @@ function initialize() {
           $(this).fadeIn(400);
         });
         $('.correctimg').animate({'width': '+=6px', 'height': '+=6px'}, 300, function () {
-          $('.correctimg').animate({'width': '-=6px', 'height': '-=6px'}, 350);					
+          $('.correctimg').animate({'width': '-=6px', 'height': '-=6px'}, 350);
         });
         $.get(url('jsonform')+'?ajax=true&random='+Math.random(), function (form) {
           $('#face').fadeOut(400);
@@ -175,7 +175,7 @@ $(document).ready(function () {
     } else {
       $('#updatebutton').prop('disabled', false);
     }
-    
+
   });
 });
 

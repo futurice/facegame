@@ -1,15 +1,15 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from django.template import add_to_builtins
 from django.contrib import admin
+from django.views.static import serve
 admin.autodiscover()
 
 from faceguessing.views import index, updatestats, jsonform, get_user_image, updatesites
 from stats.views import hall_of_fame
 from nameguessing.views import nameguessing, get_thumbnail, check_hash, json_thumbnails
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', index, name="index"),
     url(r'^updatestats/', updatestats, name="updatestats"),
     url(r'^jsonform/', jsonform, name="jsonform"),
@@ -20,11 +20,10 @@ urlpatterns = patterns('',
     url(r'^name/', nameguessing, name="nameguessing"),
     url(r'^json_thumbnails/', json_thumbnails, name="json_thumbnails"),
     url(r'^updatesites/', updatesites, name="updatesites"),
-
-    (r'^admin/', include(admin.site.urls)),
-)
+    url(r'^admin/', include(admin.site.urls)),
+]
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-    )
+    urlpatterns += [
+        url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    ]

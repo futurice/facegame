@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    {% autoescape off %}
     {% assets 'css/base.css' %}
-
+    {% endautoescape %}
     {% block header %}
     {% endblock %}
 
@@ -47,8 +48,9 @@ var URLS_BASE='{{settings.URLS_BASE}}';
 var STATIC_URL='{{STATIC_URL}}';
 </script>
 
+{% autoescape off %}
 {% assets 'js/base.js' %}
-
+{% endautoescape %}
 {% block footer %}
 
 <div class="footer navbar-fixed-bottom" id="footer">

@@ -1,11 +1,11 @@
-Django==1.6.2
+Django==1.8.9
 South==0.8.1
 argparse==1.2.1
 requests==2.2.1
 python-memcached==1.53
-django-extensions==1.2.5
+django-extensions==1.6.7
 assetgen==0.3.6
 watchdog==0.6.0
 Fabric==1.8.3
 django-js-utils-ng==0.5.futu
-slumber==0.6.0
+slumber==0.6.2

@@ -20,6 +20,8 @@ DATABASES['default']['NAME'] = os.path.abspath(os.path.join(DEPLOY_ROOT, 'sqlite
 
 URLS_BASE = '/facegame/'
 
+USER_GROUPS = ['helsinki', 'tampere', 'berlin', 'london', 'stockholm', 'munich']
+
 try:
     from secret_facegame_settings import *
 except ImportError:

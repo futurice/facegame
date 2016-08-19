@@ -22,7 +22,7 @@ import os
 class NameForm(forms.Form):
     name = forms.ChoiceField(widget=forms.RadioSelect)
 
-groups = ['tampere', 'berlin', 'helsinki', 'london', 'lausanne']
+groups = settings.USER_GROUPS
 
 def get_user_image(request):
     """ Returns JSON with URL to user face image """
@@ -186,6 +186,7 @@ def get_game_data():
     return GAME_DATA
 
 def get_users():
+    print "Getting users"
     if settings.FUM_API_URL:
         """ Get users that have a thumbnail portrait of themselves """
         KEY = 'fum-users'
@@ -213,6 +214,7 @@ def get_users():
             return []
 
 def get_users_in_groups():
+    print "Getting users in groups"
     """ Get users that have a thumbnail portrait of themselves, in groups """
     if settings.FUM_API_URL:
         usergroups = []

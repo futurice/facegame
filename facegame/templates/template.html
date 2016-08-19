@@ -10,9 +10,10 @@
 		var skips = {{ player.stats.skips }};
 	</script>
 {% endblock %}
-	
+
 {% block body %}
 
+{% load staticfiles %}
 <audio id="soundHandle1" style="display: none;"></audio>
 <audio id="soundHandle2" style="display: none;"></audio>
 <table cellspacing="8px" align="center">
@@ -22,15 +23,15 @@
 				Facegame
 			</p>
 			<div id="scoretxt" class="scoretxt">
-                <img alt="correct" title="sum of correct answers" src="{{STATIC_URL}}img/correct.gif" class="correctimg">
+                <img alt="correct" title="sum of correct answers" src="{% static "img/correct.gif" %}" class="correctimg">
 					<span id="correctnum">{{ player.stats.correctAnswers }}</span>
-                <img alt="wrong" title="sum of wrong answers" src="{{STATIC_URL}}img/wrong.gif" class="wrongimg">
+                <img alt="wrong" title="sum of wrong answers" src="{% static "img/wrong.gif" %}" class="wrongimg">
 					<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
-                <img alt="row" title="number of correct answers in a row (and highest record)" src="{{STATIC_URL}}img/row.png" class="rowimg">
+                <img alt="row" title="number of correct answers in a row (and highest record)" src="{% static "img/row.png" %}" class="rowimg">
 					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
-                <img alt="mute" title="mute/unmute sound effects" src="{{STATIC_URL}}img/muteon.png" class="muteimg">
-                <img alt="reset" title="this will reset your stats" src="{{STATIC_URL}}img/reset.png" class="resetimg" onClick="return deteleconfirm();">
-                <a href="name/"><img alt="switch" title="switch the gamemode" src="{{STATIC_URL}}img/switch.png" class="switchimg"></a>
+                <img alt="mute" title="mute/unmute sound effects" src="{% static "img/muteon.png" %}" class="muteimg">
+                <img alt="reset" title="this will reset your stats" src="{% static "img/reset.png" %}" class="resetimg" onClick="return deteleconfirm();">
+                <a href="name/"><img alt="switch" title="switch the gamemode" src="{% static "img/switch.png" %}" class="switchimg"></a>
 			</div>
 		</td>
 	</tr>

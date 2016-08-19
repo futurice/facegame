@@ -1,6 +1,10 @@
 {
 "name": "facegame",
 "version": "1.0.0",
+"scripts": {
+    "start": "REMOTE_USER=$npm_package_config_remoteUser DJANGO_SETTINGS_MODULE=facegame.settings.settings python manage.py runserver --nostatic --traceback",
+    "dev": "npm run start --facegame:remoteUser=$npm_package_config_remoteUser & python watcher.py"
+},
 "dependencies": {
     "less" : "1.4.0",
     "phantomjs": "1.9",
