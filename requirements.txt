@@ -9,3 +9,4 @@ watchdog==0.6.0
 Fabric==1.8.3
 django-js-utils-ng==0.5.futu
 slumber==0.6.2
+uwsgi==2.0.13.1

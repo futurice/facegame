@@ -146,7 +146,7 @@ URLS_EXCLUDE_PATTERN = ['.(?P<format>[a-z0-9]+)','.(?P<format>+)','__debug__','a
 URLS_BASE = ''
 URLS_DEBUG = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.DummyBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Groups, use a small pool for development
 USER_GROUPS = ['stockholm']
