@@ -43,6 +43,5 @@ EXPOSE 8000
 
 RUN ./manage.py collectstatic --noinput
 RUN assetgen --profile dev assetgen.yaml
-RUN ./manage.py makemigrations faceguessing
 
 CMD ["bash", "start.sh"]

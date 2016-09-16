@@ -5,8 +5,8 @@ PACKAGE_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '.
 PROJECT_ROOT = os.path.normpath(PACKAGE_ROOT)
 DEPLOY_ROOT = PROJECT_ROOT
 
-FUM_API_URL = ''
-FUM_API_TOKEN = ''
+FUM_API_URL = os.getenv('FUM_API_URL', '')
+FUM_API_TOKEN = os.getenv('FUM_API_TOKEN', '')
 
 THUMB_SALT = ''
 
@@ -14,7 +14,7 @@ DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
 TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
-FAKE_LOGIN = False
+FAKE_LOGIN = os.getenv('DEBUG', 'false').lower() == 'true'
 
 USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
 
@@ -42,7 +42,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = '{PROJECT_ROOT}/static/'.format(**locals())
 STATIC_URL = '/static/'
 
-SECRET_KEY = ''
+SECRET_KEY = os.getenv('SECRET_KEY', '')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -59,7 +59,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'facegame.middleware.CustomHeaderMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 

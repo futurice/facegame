@@ -10,3 +10,6 @@ class SetUserMiddleware():
     def process_request(self, request):
         if settings.FAKE_LOGIN:
             request.META['REMOTE_USER'] = settings.REMOTE_USER
+
+class CustomHeaderMiddleware(RemoteUserMiddleware):
+    header = os.getenv('REMOTE_USER_HEADER', 'REMOTE_USER')
