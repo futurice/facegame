@@ -37,7 +37,7 @@ Then run database container (we use the default postgres container):
 ```
 docker run -e POSTGRES_USER=<your db user> -e POSTGRES_DB=<your db name> postgres
 ```
-Then find out the ip address of your postgres container (with `docker inspect`for example) and start facegame container. If you want have a password in your database, give it as environment variable POSTGRES_PASSWORD. 
+Then find out the ip address of your postgres container (with `docker inspect` for example) and start facegame container. If you want have a password in your database, give it as environment variable POSTGRES_PASSWORD. 
 
 ```
 docker run -p 80:8000 -e DB_HOST=<postgres container ip> facegame
