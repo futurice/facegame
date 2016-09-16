@@ -97,7 +97,7 @@ def index(request):
             groups = user_data['groups'][0]['name']
         except IOError:
             return []
-
+            
     player = request.user
     player.selectedGroups = groups
     player.save()
@@ -193,14 +193,16 @@ def get_users():
         result = cache.get(KEY)
         if result is None:
             usernames = []
+            result = []
             for group in groups:
                 usernames += get_api().groups(group).get().get('users')
             usernames = list(set(usernames))
-            result = []
-            for username in usernames:
-                user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
+            all_users = get_api().users().get(limit='0',fields='username,first_name,last_name,portrait_thumb_url')
+            users = filter(lambda x: x['username'] in usernames, all_users)
+            for user in users:
                 if 'thumb' in user.get('portrait_thumb_url'):
                     result.append(user)
+
             cache.set(KEY, result)
         return result
     else:
@@ -218,15 +220,17 @@ def get_users_in_groups():
     """ Get users that have a thumbnail portrait of themselves, in groups """
     if settings.FUM_API_URL:
         usergroups = []
+        all_users = get_api().users().get(limit='0',fields='username,first_name,last_name,portrait_thumb_url')
         for group in groups:
             usergroup = []
             usernames = get_api().groups(group).get().get('users')
-            for username in usernames:
-                user = get_api().users(username).get(fields='username,first_name,last_name,portrait_thumb_url')
+            users = filter(lambda x: x['username'] in usernames, all_users)
+            for user in users:
                 if 'thumb' in user.get('portrait_thumb_url'):
                     user['img_hash'] = get_comparison_hash(user['portrait_thumb_url'])
                     usergroup.append(user)
             usergroups.append({'name':group, 'users':usergroup})
+
         return usergroups
     else:
         # Show test data from the provided file

@@ -5,26 +5,27 @@ PACKAGE_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), '..', '.
 PROJECT_ROOT = os.path.normpath(PACKAGE_ROOT)
 DEPLOY_ROOT = PROJECT_ROOT
 
-FUM_API_URL = ''
-FUM_API_TOKEN = ''
+FUM_API_URL = os.getenv('FUM_API_URL', '')
+FUM_API_TOKEN = os.getenv('FUM_API_TOKEN', '')
 
 THUMB_SALT = ''
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
 TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
+FAKE_LOGIN = os.getenv('DEBUG', 'false').lower() == 'true'
 
 USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '{PROJECT_ROOT}/sqlite.db'.format(**locals()),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -41,7 +42,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = '{PROJECT_ROOT}/static/'.format(**locals())
 STATIC_URL = '/static/'
 
-SECRET_KEY = ''
+SECRET_KEY = os.getenv('SECRET_KEY', '')
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -52,12 +53,13 @@ CACHES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 TEMPLATE_LOADERS = DEFAULT_SETTINGS.TEMPLATE_LOADERS
 MIDDLEWARE_CLASSES = (
+    'facegame.middleware.SetUserMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.contrib.auth.middleware.RemoteUserMiddleware',
+    'facegame.middleware.CustomHeaderMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
@@ -146,10 +148,10 @@ URLS_EXCLUDE_PATTERN = ['.(?P<format>[a-z0-9]+)','.(?P<format>+)','__debug__','a
 URLS_BASE = ''
 URLS_DEBUG = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.DummyBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Groups, use a small pool for development
-USER_GROUPS = ['stockholm']
+USER_GROUPS = ['helsinki', 'tampere', 'berlin', 'london', 'stockholm', 'munich']
 
 try:
     from local_settings import *

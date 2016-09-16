@@ -1,10 +1,11 @@
 ########################################
-#	Docker installation for Facegame   #
+#	    Dockerfile for Facegame        #
 ########################################
 
-FROM ubuntu:12.04
+FROM ubuntu:16.04
 
 ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /opt/app/
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -20,30 +21,27 @@ RUN apt-get update && apt-get install -y \
     curl \
     software-properties-common \
     libfreetype6 \
-    libfontconfig
+    libfontconfig \
+    nginx-full \
+    libpq-dev \
+    supervisor
 
-#	Installing virtualenv
-RUN pip install virtualenv
+COPY requirements.txt /opt/app/requirements.txt
+RUN pip install -r requirements.txt
 
-#	Runing virtualenv
-RUN virtualenv --no-site-packages /opt/ve/facegame
+ENV DJANGO_SETTINGS_MODULE facegame.settings.settings
+ENV REMOTE_USER topa
 
-#	Installing phantomjs
-RUN curl -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2 | \
-    tar -C /usr/local -xjf - && ln -sf ../phantomjs-1.9.7-linux-x86_64/bin/phantomjs /usr/local/bin/
+COPY . /opt/app/
+COPY docker/facegame_nginx.conf /etc/nginx/sites-available/facegame_nginx.conf
+COPY docker/start.sh /opt/app/start.sh
+RUN ln -s /etc/nginx/sites-available/facegame_nginx.conf /etc/nginx/sites-enabled/
+COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
+RUN echo "daemon off;\n" >> /etc/nginx/nginx.conf
 
-#	Installing casperjs
-RUN git clone git://github.com/n1k0/casperjs.git /usr/local/casperjs && \
-    ln -sf ../casperjs/bin/casperjs /usr/local/bin
-
-ADD . /opt/apps/facegame
-
-#	Open port 8000
 EXPOSE 8000
 
-CMD cd /opt/apps/facegame && \
-    git remote rm origin && \
-    git remote add origin https://github.com/futuriceit/facegame.git && \
-    git pull origin master && \
-    /opt/ve/facegame/bin/pip install -r requirements.txt && \
-    bash
+RUN ./manage.py collectstatic --noinput
+RUN assetgen --profile dev assetgen.yaml
+
+CMD ["bash", "start.sh"]
