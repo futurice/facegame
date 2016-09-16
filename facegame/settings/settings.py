@@ -10,21 +10,22 @@ FUM_API_TOKEN = ''
 
 THUMB_SALT = ''
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS
+FAKE_LOGIN = False
 
 USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '{PROJECT_ROOT}/sqlite.db'.format(**locals()),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('DB_NAME', ''),
+        'USER': os.getenv('DB_USER', ''),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -52,6 +53,7 @@ CACHES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 TEMPLATE_LOADERS = DEFAULT_SETTINGS.TEMPLATE_LOADERS
 MIDDLEWARE_CLASSES = (
+    'facegame.middleware.SetUserMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -149,7 +151,7 @@ URLS_DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Groups, use a small pool for development
-USER_GROUPS = ['stockholm']
+USER_GROUPS = ['helsinki', 'tampere', 'berlin', 'london', 'stockholm', 'munich']
 
 try:
     from local_settings import *

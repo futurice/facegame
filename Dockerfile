@@ -1,5 +1,5 @@
 ########################################
-#	Docker installation for Facegame   #
+#	    Dockerfile for Facegame        #
 ########################################
 
 FROM ubuntu:16.04
@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6 \
     libfontconfig \
     nginx-full \
+    libpq-dev \
     supervisor
 
 COPY requirements.txt /opt/app/requirements.txt
@@ -33,14 +34,15 @@ ENV REMOTE_USER topa
 
 COPY . /opt/app/
 COPY docker/facegame_nginx.conf /etc/nginx/sites-available/facegame_nginx.conf
+COPY docker/start.sh /opt/app/start.sh
 RUN ln -s /etc/nginx/sites-available/facegame_nginx.conf /etc/nginx/sites-enabled/
 COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
 RUN echo "daemon off;\n" >> /etc/nginx/nginx.conf
 
 EXPOSE 8000
 
-RUN ./manage.py migrate --noinput
 RUN ./manage.py collectstatic --noinput
 RUN assetgen --profile dev assetgen.yaml
+RUN ./manage.py makemigrations faceguessing
 
-CMD /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+CMD ["bash", "start.sh"]

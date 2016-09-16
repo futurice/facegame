@@ -27,7 +27,7 @@
   </div>
   <div>
     <label class="checkbox-inline">
-      <input class="siteChoice" type="checkbox" name="lausanne" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Lausanne
+      <input class="siteChoice" type="checkbox" name="munich" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Munich
     </label>
     <label class="checkbox-inline">
       <input class="siteChoice" type="checkbox" name="london" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>London
@@ -38,7 +38,12 @@
       <input class="siteChoice" type="checkbox" name="tampere" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Tampere
     </label>
   </div>
-  <button class="btn btn-primary" id="updatebutton" onclick="updatesites()">Päivitä</button>
+  <div>
+    <label class="checkbox-inline">
+      <input class="siteChoice" type="checkbox" name="stockholm" checked><span class="btn btn-default"><span class="glyphicon glyphicon-ok active"></span></span>Stockholm
+    </label>
+  </div>
+  <button class="btn btn-primary" id="updatebutton" onclick="updatesites()">Update</button>
 </div>
 {% endblock %}
 
@@ -53,9 +58,10 @@ var STATIC_URL='{{STATIC_URL}}';
 {% endautoescape %}
 {% block footer %}
 
+<!--
 <div class="footer navbar-fixed-bottom" id="footer">
 	<h6>Facegame is made by <a href="http://www.futurice.com/">Futurice</a>, a lean service creation company.</h6>
-</div>
+</div>-->
 
 {% endblock %}
 
