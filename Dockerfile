@@ -31,6 +31,7 @@ RUN pip install -r requirements.txt
 
 ENV DJANGO_SETTINGS_MODULE facegame.settings.settings
 ENV REMOTE_USER topa
+ENV SECRET_KEY default_insecure_secret
 
 COPY . /opt/app/
 COPY docker/facegame_nginx.conf /etc/nginx/sites-available/facegame_nginx.conf
