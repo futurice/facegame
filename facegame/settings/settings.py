@@ -10,7 +10,7 @@ FUM_API_TOKEN = ''
 
 THUMB_SALT = ''
 
-DEBUG = False
+DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
 TEMPLATE_DEBUG = DEBUG
 ADMINS = ()
 MANAGERS = ADMINS

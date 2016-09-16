@@ -12,7 +12,7 @@ This game was developed as our internal application mainly designed for new empl
 About Futurice
 --------------
 
-<a href="http://www.futurice.com">Futurice</a> is a lean service creation company with offices in Helsinki, Tampere, Berlin and London. 
+<a href="http://www.futurice.com">Futurice</a> is a lean service creation company with offices in Helsinki, Tampere, Berlin, London, Stockholm and Munich. 
 
 People who have contributed to Facegame:   
 <a href="https://github.com/mixman">Jussi Vaihia</a>   
@@ -25,25 +25,26 @@ Mats Malmstén
 Installation
 ------------
 
-First step is to install <a href="http://www.docker.com/">docker</a> on your system.
+Facegame runs on docker with the database in a separate container. First set all the secrets and other missing configuration to `local_settings.py` or to `settings.py`. You have to set at least FUM_API_URL and FUM_API_TOKEN for fetching user pictures, database credentials and django secret key. 
 
-To build the system:   
-`docker build -t <your image name> .`
-
-To run the container:   
-`docker run -t -i -p 8000:8000 <your image name>`
-
-For authentication the app uses RemoteUser. To run the system inside the docker container:
-``` 
-source /opt/ve/facegame/bin/activate   
-export DJANGO_SETTINGS_MODULE=facegame.settings.settings   
-DJANGO_SETTINGS_MODULE=facegame.settings.settings REMOTE_USER=<your username> python manage.py runserver --nostatic --traceback   
-DJANGO_SETTINGS_MODULE=facegame.settings.settings python watcher.py   
+When configuration is done, build facegame:
 ```
-Test data for the application is located at `test_data.json`. To modify the application to use your own json file, change `USER_DATA` at settings.
+docker build -t facegame .
+```
 
-Dependancies for Facegame are located at the requirements.txt-file. You can install them manually by:   
-`pip install -r requirements.txt.`
+Then run database container (we use the default postgres container):
+
+```
+docker run -e POSTGRES_USER=<your db user> -e POSTGRES_DB=<your db name> postgres
+```
+Then find out the ip address of your postgres container (with `docker inspect`for example) and start facegame container. If you want have a password in your database, give it as environment variable POSTGRES_PASSWORD. 
+
+```
+docker run -p 80:8000 -e DB_HOST=<postgres container ip> facegame
+```
+
+If you are developing locally, set FAKE_LOGIN to True. This enables a middleware that authenticates you as the user given in settings.REMOTE_USER. Always set FAKE_LOGIN to False in production 
+
 
 Support
 -------
