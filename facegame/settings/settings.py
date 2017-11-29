@@ -21,7 +21,7 @@ USER_DATA = '{PROJECT_ROOT}/test_data.json'.format(**locals())
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', ''),
+        'NAME': os.getenv('DB_NAME', 'facegame'),
         'USER': os.getenv('DB_USER', ''),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
         'HOST': os.getenv('DB_HOST', ''),
@@ -36,10 +36,10 @@ SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
 
-MEDIA_ROOT = '{PROJECT_ROOT}/media/'.format(**locals())
+MEDIA_ROOT = '/opt/media/'
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = '{PROJECT_ROOT}/static/'.format(**locals())
+STATIC_ROOT = '/opt/static/'
 STATIC_URL = '/static/'
 
 SECRET_KEY = os.getenv('SECRET_KEY', '')

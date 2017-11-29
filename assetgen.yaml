@@ -18,7 +18,7 @@ generate:
     - facegame/common/static/css/tipsy.css
     - facegame/common/static/css/fgstyle.css
 
-output.directory: static
+output.directory: /opt/static
 output.hashed: true
 output.manifest: assets.json
 

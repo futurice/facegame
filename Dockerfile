@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y \
     libfontconfig \
     nginx-full \
     libpq-dev \
+    libpcre3 libpcre3-dev libssl-dev \
     supervisor
 
 COPY requirements.txt /opt/app/requirements.txt
@@ -41,6 +42,8 @@ COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
 RUN echo "daemon off;\n" >> /etc/nginx/nginx.conf
 
 EXPOSE 8000
+
+RUN mkdir -p /opt/static
 
 RUN ./manage.py collectstatic --noinput
 RUN assetgen --profile dev assetgen.yaml

@@ -8,3 +8,4 @@ venv/
 /static/
 sqlite.db
 npm-debug.log
+tags

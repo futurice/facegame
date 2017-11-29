@@ -25,26 +25,34 @@ Mats Malmstén
 Installation
 ------------
 
-Facegame runs on docker with the database in a separate container. First set all the secrets and other missing configuration to `local_settings.py` or to `settings.py`. You have to set at least FUM_API_URL and FUM_API_TOKEN for fetching user pictures, database credentials and django secret key. 
-
-When configuration is done, build facegame:
+Build facegame:
 ```
 docker build -t facegame .
 ```
 
-Then run database container (we use the default postgres container):
-
+Setup database container:
 ```
-docker run -e POSTGRES_USER=<your db user> -e POSTGRES_DB=<your db name> postgres
-```
-Then find out the ip address of your postgres container (with `docker inspect` for example) and start facegame container. If you want have a password in your database, give it as environment variable POSTGRES_PASSWORD. 
-
-```
-docker run -p 80:8000 -e DB_HOST=<postgres container ip> facegame
+docker run --name postgres -e POSTGRES_PASSWORD=secret -d postgres
+docker exec -it postgres sh -c "dropdb -Upostgres facegame"
+docker exec -it postgres sh -c "createdb -Upostgres facegame"
 ```
 
-If you are developing locally, set FAKE_LOGIN to True. This enables a middleware that authenticates you as the user given in settings.REMOTE_USER. Always set FAKE_LOGIN to False in production 
+Run facegame locally at http://localhost:8000
+```
+docker run --rm -it -p 8000:8000 --name facegame \
+    -e DB_USER=postgres \
+    -e DB_PASSWORD=secret \
+    -e DB_HOST=postgres \
+    -e FAKE_LOGIN=true \
+    -e REMOTE_USER=myusername \
+    -e DEBUG=true \
+    --link postgres:postgres \
+    facegame
+```
 
+TODO: deprecate FUM_API_URL,FUM_API_TOKEN => fetching .json
+
+Env vars DEBUG, FAKE_LOGIN and REMOTE_USER are for local development only.
 
 Support
 -------
