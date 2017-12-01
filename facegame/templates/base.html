@@ -2,7 +2,10 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,600" rel="stylesheet">
+
     {% autoescape off %}
     {% assets 'css/base.css' %}
     {% endautoescape %}
@@ -16,6 +19,10 @@
 {% endblock %}
 
 {% block sitechoice %}
+
+<div class="site-choice-toggle">
+  <button class="btn btn-default btn-link" id="siteToggle"><i class="glyphicon glyphicon-globe"></i> Choose Sites</button>
+</div>
 <div id="siteChoices" class="well">
   <div>
     <label class="checkbox-inline">

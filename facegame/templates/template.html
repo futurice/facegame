@@ -16,40 +16,46 @@
 {% load staticfiles %}
 <audio id="soundHandle1" style="display: none;"></audio>
 <audio id="soundHandle2" style="display: none;"></audio>
-<table cellspacing="8px" align="center">
-	<tr>
-		<td valign="bottom">
-			<p class="logotxt">
-				Facegame
-			</p>
-			<div id="scoretxt" class="scoretxt">
-                <img alt="correct" title="sum of correct answers" src="{% static "img/correct.gif" %}" class="correctimg">
-					<span id="correctnum">{{ player.stats.correctAnswers }}</span>
-                <img alt="wrong" title="sum of wrong answers" src="{% static "img/wrong.gif" %}" class="wrongimg">
-					<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
-                <img alt="row" title="number of correct answers in a row (and highest record)" src="{% static "img/row.png" %}" class="rowimg">
-					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
-                <img alt="mute" title="mute/unmute sound effects" src="{% static "img/muteon.png" %}" class="muteimg">
-                <img alt="reset" title="this will reset your stats" src="{% static "img/reset.png" %}" class="resetimg" onClick="return deteleconfirm();">
-                <a href="name/"><img alt="switch" title="switch the gamemode" src="{% static "img/switch.png" %}" class="switchimg"></a>
-			</div>
-		</td>
-	</tr>
-</table>
+<div class="facegame__header">
+	<div class="facegame__header__inner">
+		<h1 class="logotxt">
+			Facegame 🤔
+		</h1>
+		<div id="scoretxt" class="scoretxt">
+			<span class="score-column">
+				<img alt="correct" title="sum of correct answers" src="{% static "img/correct.gif" %}" class="correctimg">
+				<span id="correctnum">{{ player.stats.correctAnswers }}</span>
+			</span>
+			<span class="score-column">
+				<img alt="wrong" title="sum of wrong answers" src="{% static "img/wrong.gif" %}" class="wrongimg">
+				<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
+			</span>
+			<span class="score-column">
+				<img alt="row" title="number of correct answers in a row (and highest record)" src="{% static "img/row.png" %}" class="rowimg">
+				<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
+			</span>
+			<span class="score-column">
+				<img alt="mute" title="mute/unmute sound effects" src="{% static "img/muteon.png" %}" class="muteimg">
+			</span>
+			<span class="score-column">
+				<img alt="reset" title="this will reset your stats" src="{% static "img/reset.png" %}" class="resetimg" onClick="return deteleconfirm();">
+			</span>
+			<span class="score-column">
+				<a href="name/"><img alt="switch" title="switch the gamemode" src="{% static "img/switch.png" %}" class="switchimg"></a>
+			</span>
+		</div>
+	</div>
+</div>
 <div id="output">
-<table cellspacing="35px" align="center" id="gametable">
-	<tr>
-		<td align="right">
-			<form id="nameform" method="post">{% csrf_token %}
-			<font class="names">
-			{{ form.name }}
-			</font>
-			</form>
-			</td>
-		<td align="left">
-            <img id="face" src="{{choice}}" class="thumb_size">
-		</td>
-	</tr>
-</table>
+	<div id="gametable" class="nameguess-columns">
+			<div class="facegame__names">
+				<form id="nameform" method="post">{% csrf_token %}
+					{{ form.name }}
+				</form>
+			</div>
+			<div class="facegame__image">
+	      <img id="face" src="{{choice}}" class="thumb_size">
+			</div>
+	</div>
 </div>
 {% endblock %}

@@ -4,17 +4,14 @@
 	}
 </style>
 
-<table cellspacing="35px" align="center">
-	<tr>
-		<td align="right">
+<div class="nameguess-columns">
+		<div class="facegame__names">
 			<form id="nameform" method="post">{% csrf_token %}
-			<font class="names">
 			{{ form.name }}
-			</font>
 			</form>
-			</td>
-		<td align="left">
-            <img alt="current face" id="face" src="{{choice}}" class="thumb_size">
-		</td>
-	</tr>
-</table>
+		</div>
+		<div class="facegame__image">
+      <img alt="current face" id="face" src="{{choice}}" class="thumb_size">
+		</div>
+
+</div>
