@@ -15,26 +15,34 @@
 
 <audio id="soundHandle1" style="display: none;"></audio>
 <audio id="soundHandle2" style="display: none;"></audio>
-<table cellspacing="8px" align="center">
-	<tr>
-		<td valign="bottom">
-			<p class="logotxt">
-				Facegame
-			</p>
-			<div id="scoretxt" class="scoretxt">
+<div class="facegame__header">
+	<div class="facegame__header__inner">
+		<h1 class="logotxt">
+			Facegame 🤔
+		</h1>
+		<div id="scoretxt" class="scoretxt">
+			<span class="score-column">
 				<img alt="correct" title="sum of correct answers" src="{{STATIC_URL}}img/correct.gif" class="correctimg">
 					<span id="correctnum">{{ player.stats.correctAnswers }}</span>
+			</span>
+			<span class="score-column">
 				<img alt="wrong" title="sum of wrong answers" src="{{STATIC_URL}}img/wrong.gif" class="wrongimg">
 					<span id="wrongnum">{{ player.stats.wrongAnswers }}</span>
+			</span>
+			<span class="score-column">
 				<img alt="row" title="number of correct answers in a row (and highest record)" src="{{STATIC_URL}}img/row.png" class="rowimg">
 					<span id="rownum">{{ player.stats.currentStreak }}, {{ player.stats.highestStreak }}</span>
+			</span>
+			<span class="score-column">
 				<img alt="mute" title="mute/unmute sound effects" src="{{STATIC_URL}}img/muteon.png" class="muteimg">
+			</span>
+			<span class="score-column">
 				<img alt="reset" title="this will reset your stats" src="{{STATIC_URL}}img/reset.png" class="resetimg" onClick="return deteleconfirm();">
                 <a href="../"><img alt="switch" title="switch the gamemode" src="{{STATIC_URL}}img/switch.png" class="switchimg"></a>
-			</div>
-		</td>
-	</tr>
-</table>
+      </span>
+		</div>
+	</div>
+</div>
 <div align="center" id="loaderdiv" style="float:middle;display:none;"><img id="loader" src="{{STATIC_URL}}img/loader.gif"></div>
 <div align="center" id="thumbnails" style="float:middle;padding:1em;">
 
