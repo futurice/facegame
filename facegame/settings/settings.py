@@ -151,7 +151,7 @@ URLS_DEBUG = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Groups, use a small pool for development
-USER_GROUPS = ['helsinki', 'tampere', 'berlin', 'london', 'stockholm', 'munich']
+USER_GROUPS = ['helsinki', 'tampere', 'berlin', 'london', 'stockholm', 'munich', 'oslo']
 
 try:
     from local_settings import *

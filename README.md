@@ -12,15 +12,15 @@ This game was developed as our internal application mainly designed for new empl
 About Futurice
 --------------
 
-<a href="http://www.futurice.com">Futurice</a> is a lean service creation company with offices in Helsinki, Tampere, Berlin, London, Stockholm and Munich. 
+<a href="http://www.futurice.com">Futurice</a> is a lean service creation company with offices in Helsinki, Tampere, Berlin, London, Stockholm, Munich and Oslo.
 
-People who have contributed to Facegame:   
-<a href="https://github.com/mixman">Jussi Vaihia</a>   
-<a href="https://github.com/Ozzee">Oskar Ehnström</a>   
-Jeremi Saarinen   
-<a href="https://github.com/ojarva">Olli Jarva</a>   
-Mats Malmstén   
-<a href="https://github.com/Wisheri">Ville Tainio</a>   
+People who have contributed to Facegame:
+<a href="https://github.com/mixman">Jussi Vaihia</a>
+<a href="https://github.com/Ozzee">Oskar Ehnström</a>
+Jeremi Saarinen
+<a href="https://github.com/ojarva">Olli Jarva</a>
+Mats Malmstén
+<a href="https://github.com/Wisheri">Ville Tainio</a>
 
 Installation
 ------------
